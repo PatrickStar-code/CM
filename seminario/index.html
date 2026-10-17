@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+  <!--
+    =========================================================
+    SHELL DA APRESENTAÇÃO — SEMINÁRIO CIÊNCIA DOS MATERIAIS
+    =========================================================
+    Estrutura do projeto (sem build, abre direto no navegador):
+      index.html            → este shell (barra de alunos + iframes)
+      alunos/<nome>.html    → apresentação individual de cada aluno
+      assets/css/base.css   → design system compartilhado (NÃO editar
+                              sem avisar os demais — vale para todos)
+      assets/css/shell.css  → estilos exclusivos do shell
+      assets/js/shell.js    → troca de abas, teclado, lazy-load
+      assets/js/atmosfera.js→ partículas de fundo (fagulhas)
+      assets/js/aluno-comum.js → ponte de eventos shell ↔ aluno
+
+    COMO EDITAR UM ALUNO: mexa SOMENTE em alunos/<nome>.html.
+    COMO ADICIONAR UM ALUNO NOVO: leia o README.md na raiz.
+    =========================================================
+  -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seminário Ciência dos Materiais — Apresentação Unificada</title>
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/shell.css" />
+  </head>
+  <body>
+    <canvas id="bgCanvas"></canvas>
+    <div class="vignette"></div>
+
+    <!-- BARRA SUPERIOR GLOBAL — SELETOR DOS 7 ALUNOS -->
+    <nav id="studentBar">
+      <div class="seminar-tag">
+        <span>◆</span> SEMINÁRIO CIÊNCIA DOS MATERIAIS
+      </div>
+      <div class="student-Selector">
+        <button class="stu-btn" data-stu="1" onclick="switchStudent(1)">
+          <i>01</i>Nathan
+        </button>
+        <button class="stu-btn" data-stu="2" onclick="switchStudent(2)">
+          <i>02</i>Pedro Paulo
+        </button>
+        <button class="stu-btn" data-stu="3" onclick="switchStudent(3)">
+          <i>03</i>Ilca
+        </button>
+        <button class="stu-btn" data-stu="4" onclick="switchStudent(4)">
+          <i>04</i>Pedro Vicente
+        </button>
+        <button class="stu-btn" data-stu="5" onclick="switchStudent(5)">
+          <i>05</i>Patrick
+        </button>
+        <button class="stu-btn" data-stu="6" onclick="switchStudent(6)">
+          <i>06</i>Pedro Ricardo
+        </button>
+        <button class="stu-btn active" data-stu="7" onclick="switchStudent(7)">
+          <i>07</i>Gustavo
+        </button>
+      </div>
+    </nav>
+
+    <!-- ÁREAS DOS ALUNOS — cada iframe carrega alunos/<arquivo>.html sob demanda -->
+    <div id="student-1" class="student-module">
+      <iframe title="Apresentação — Nathan" data-src="alunos/nathan.html"></iframe>
+    </div>
+    <div id="student-2" class="student-module">
+      <iframe title="Apresentação — Pedro Paulo" data-src="alunos/pedro-paulo.html"></iframe>
+    </div>
+    <div id="student-3" class="student-module">
+      <iframe title="Apresentação — Ilca" data-src="alunos/ilca.html"></iframe>
+    </div>
+    <div id="student-4" class="student-module">
+      <iframe title="Apresentação — Pedro Vicente" data-src="alunos/pedro-vicente.html"></iframe>
+    </div>
+    <div id="student-5" class="student-module">
+      <iframe title="Apresentação — Patrick" data-src="alunos/patrick.html"></iframe>
+    </div>
+    <div id="student-6" class="student-module">
+      <iframe title="Apresentação — Pedro Ricardo" data-src="alunos/pedro-ricardo.html"></iframe>
+    </div>
+    <div id="student-7" class="student-module">
+      <iframe title="Apresentação — Gustavo" data-src="alunos/gustavo.html"></iframe>
+    </div>
+
+    <script src="assets/js/atmosfera.js"></script>
+    <script src="assets/js/shell.js"></script>
+  </body>
+</html>

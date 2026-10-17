@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      04 · Pedro Vicente — Emissão de CO₂ &amp; Descarbonização do Aço
+    </title>
+    <link rel="stylesheet" href="../assets/css/base.css" />
+
+    <!-- =========================================================
+     ALUNO 04: PEDRO VICENTE — EMISSÃO DE CO₂ & DESCARBONIZAÇÃO
+     Extraído do monólito (student-4) e adaptado à estrutura nova:
+     página autocontida em alunos/pedro-vicente.html, shell via
+     index.html (eventos seminar:activate/deactivate + teclado).
+     ========================================================= -->
+
+    <style>
+      /* ===== Estilos locais do Aluno 04 (escopados em #student-4 — sem conflito global) ===== */
+      #student-4 .pv-photo {
+        position: relative;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+        background: #0a1020;
+      }
+      #student-4 .pv-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      #student-4 .pv-photo figcaption {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(transparent, rgba(4, 7, 14, 0.94));
+        padding: 18px 10px 7px;
+        font:
+          700 12.5px "Segoe UI",
+          sans-serif;
+        color: #dbe4f0;
+        text-align: center;
+        letter-spacing: 0.02em;
+      }
+      #student-4 .pv-card-photo {
+        height: 150px;
+        flex-shrink: 0;
+      }
+
+      /* No CSS global, .example-text b vira título de bloco laranja — isso
+       quebraria as ênfases <b> inline dentro do texto dos banners.
+       Aqui, apenas os <b> internos ao <span> voltam a ser inline normais;
+       o <b> título (filho direto) continua block/laranja como no design. */
+      #student-4 .example-text span b {
+        display: inline;
+        font-size: inherit;
+        color: inherit;
+        text-transform: none;
+        letter-spacing: normal;
+        margin: 0;
+      }
+
+      /* Rodapé de navegação mobile — existe apenas dentro do módulo do Aluno 04 */
+      #student-4 .mobile-slide-footer {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 16px;
+        background: rgba(8, 13, 24, 0.95);
+        border-top: 1px solid var(--border);
+        backdrop-filter: blur(12px);
+        z-index: 40;
+        flex-shrink: 0;
+      }
+      #student-4 .mob-nav-btn {
+        background: rgba(30, 41, 59, 0.85);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 9px 16px;
+        border-radius: 10px;
+        font:
+          700 14px "Segoe UI",
+          sans-serif;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      #student-4 .mob-nav-btn:active {
+        background: rgba(255, 122, 47, 0.25);
+        border-color: var(--orange);
+      }
+      #student-4 .mob-slide-indicator {
+        font: 800 13px var(--mono);
+        color: var(--orange);
+        letter-spacing: 0.08em;
+      }
+
+      /* Responsividade escopada ao módulo do Aluno 04 (não afeta os demais alunos) */
+      @media (max-height: 820px) and (min-width: 1181px) {
+        #student-4 .slide {
+          overflow-y: auto;
+        }
+      }
+      @media (max-width: 1180px) {
+        #student-4 .sub-header {
+          height: auto;
+          padding: 10px 18px;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
+        }
+        #student-4 .slide-nav {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          padding-bottom: 2px;
+        }
+        #student-4 .slide-nav::-webkit-scrollbar {
+          display: none;
+        }
+        #student-4 .slide-tab {
+          flex-shrink: 0;
+          white-space: nowrap;
+          font-size: 14px;
+          padding: 7px 12px;
+        }
+        #student-4 .slides-stage {
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        #student-4 .slide {
+          position: relative;
+          inset: auto;
+          min-height: 100%;
+          height: auto;
+          padding: 18px 22px 28px;
+          overflow: visible;
+        }
+        #student-4 .grid-3 {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        #student-4 .grid-2,
+        #student-4 .split-3d {
+          grid-template-columns: 1fr;
+          gap: 18px;
+          flex: none;
+        }
+        #student-4 .mobile-slide-footer {
+          display: flex;
+        }
+      }
+      @media (max-width: 768px) {
+        #student-4 .pv-card-photo {
+          height: 150px;
+        }
+        #student-4 .slide {
+          padding: 16px 14px 24px;
+        }
+        #student-4 .slide-header h1 {
+          font-size: 26px;
+        }
+        #student-4 .key-list li {
+          font-size: 17px;
+        }
+        #student-4 .card-title {
+          font-size: 19px;
+        }
+      }
+
+      /* ===== HARMONIZAÇÃO VISUAL DO ALUNO 04 ==========================
+           Mesma paleta do Aluno 02: laranja (marca) + azul (apoio
+           informativo) + verde/vermelho apenas com função semântica
+           (pro/con). Avisos em âmbar suave; roxo decorativo eliminado. */
+      #student-4 {
+        --amber: #fbbf24;
+      }
+      #student-4 .card {
+        border-top: 3px solid rgba(255, 122, 47, 0.4) !important;
+      }
+      #student-4 .card-title {
+        color: var(--text) !important;
+      }
+      #student-4 .pill.warn {
+        color: var(--amber);
+        border-color: rgba(251, 191, 36, 0.42);
+        background: rgba(251, 191, 36, 0.09);
+      }
+    </style>
+  </head>
+  <body id="student-4" class="aluno-page">
+    <canvas id="bgCanvas"></canvas>
+    <div class="vignette"></div>
+
+    <header class="sub-header">
+      <div class="brand">
+        <div class="brand-icon">🌍</div>
+        <div>
+          <span class="brand-title">CIÊNCIA DOS MATERIAIS</span>
+          <span class="brand-sub"
+            >04 Pedro Vicente · Emissão de CO₂ &amp; Descarbonização do
+            Aço</span
+          >
+        </div>
+      </div>
+
+      <nav class="slide-nav" id="pvSlideNav">
+        <button class="slide-tab active" onclick="pv_goSlide(0)">
+          <span class="num">01</span>Panorama
+        </button>
+        <button class="slide-tab" onclick="pv_goSlide(1)">
+          <span class="num">02</span>Descarbonização
+        </button>
+        <button class="slide-tab" onclick="pv_goSlide(2)">
+          <span class="num">03</span>Biocarvão &amp; Carvão
+        </button>
+        <button class="slide-tab" onclick="pv_goSlide(3)">
+          <span class="num">04</span>H₂ &amp; Redução Direta
+        </button>
+        <button class="slide-tab" onclick="pv_goSlide(4)">
+          <span class="num">05</span>CCUS
+        </button>
+        <button class="slide-tab" onclick="pv_goSlide(5)">
+          <span class="num">06</span>Síntese
+        </button>
+      </nav>
+    </header>
+
+    <div class="slides-stage">
+      <!-- SLIDE 1: PANORAMA — EMISSÃO DE CO₂ NA SIDERURGIA -->
+      <section class="slide active" id="pv-slide-0">
+        <div class="slide-header">
+          <div>
+            <div class="kicker">APRESENTADOR 04 · PEDRO VICENTE</div>
+            <h1>Emissão de CO₂ na <span>Siderurgia</span></h1>
+          </div>
+          <div class="slide-subtitle">
+            ≈ <b style="color: var(--orange)">2 t de CO₂</b> por tonelada de aço
+            na rota integrada
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card" style="justify-content: space-between">
+            <div>
+              <div class="card-title">🏭 De onde vem o CO₂?</div>
+              <ul class="key-list">
+                <li>
+                  No alto-forno, o carvão é <b>combustível e agente redutor</b>:
+                  queima e arranca o oxigênio do minério.
+                </li>
+                <li>
+                  Reação central: <b>Fe₂O₃ + 3CO → 2Fe + 3CO₂</b> — o oxigênio
+                  do minério sai na forma de CO₂.
+                </li>
+                <li>
+                  Rota integrada (alto-forno + conversor):
+                  <b>≈ 2,0 t CO₂/t</b> de aço.
+                </li>
+                <li>
+                  Rota FEA com sucata: <b>≈ 0,6 t CO₂/t</b> — reciclar aço já
+                  evita boa parte da emissão.
+                </li>
+              </ul>
+            </div>
+            <div class="pill-row">
+              <span class="pill con">BF-BOF ≈ 2,0 t CO₂/t</span>
+              <span class="pill info">FEA + sucata ≈ 0,6 t CO₂/t</span>
+              <span class="pill warn">Net zero 2050</span>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+              min-height: 0;
+            "
+          >
+            <figure
+              class="pv-photo"
+              style="flex: 1 1 0; min-height: 160px; margin: 0"
+            >
+              <img
+                src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/c5ce78d02384.jpg"
+                alt="Forno siderúrgico com metal em fusão incandescente e faíscas"
+              />
+              <figcaption>
+                Alto-forno: onde o carvão encontra o minério — e nasce o CO₂
+              </figcaption>
+            </figure>
+            <figure
+              class="pv-photo"
+              style="flex: 1 1 0; min-height: 160px; margin: 0"
+            >
+              <img
+                src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/d1b7e5e1e728.jpg"
+                alt="Colunas de fumaça industrial sobre a cidade ao fundo"
+              />
+              <figcaption>
+                Gases de chaminé: o CO₂ por trás do aço do dia a dia
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="example-banner">
+          <div class="example-icon">💡</div>
+          <div class="example-text">
+            <b>Por que o tema importa</b>
+            <span
+              >A siderurgia responde por <b>~8% das emissões globais de CO₂</b>
+              (IEA). Sem mudar a origem do carbono — ou capturá-lo — o aço não
+              tem caminho para a meta climática de 2050. É o que veremos nas
+              <b>quatro frentes</b> a seguir.</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: TÓPICO 01 — ROTAS PARA DESCARBONIZAÇÃO -->
+      <section class="slide" id="pv-slide-1">
+        <div class="slide-header">
+          <div>
+            <div class="kicker">TÓPICO 01 · ROTAS PARA DESCARBONIZAÇÃO</div>
+            <h1>Rotas para <span>Descarbonização</span></h1>
+          </div>
+          <div class="slide-subtitle">
+            <b style="color: var(--orange)">Três frentes</b> para tirar o
+            carbono fóssil da equação
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <figure class="pv-photo pv-card-photo" style="margin: 0">
+              <img
+                src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/367d014b0f30.jpg"
+                alt="Vista aérea de floresta plantada de eucalipto"
+              />
+              <figcaption>Carbono de biomassa: floresta plantada</figcaption>
+            </figure>
+            <div class="card-title">🪵 Carbono de Biomassa</div>
+            <ul class="key-list">
+              <li>
+                Trocar o coque mineral pelo
+                <b>biocarvão de floresta plantada</b>.
+              </li>
+              <li>
+                Carbono <b>biogênico</b>: a floresta reabsorve o CO₂ ao crescer.
+              </li>
+              <li>
+                Rota brasileira do <b>gusa verde</b> — já em operação comercial.
+              </li>
+            </ul>
+            <div class="pill-row">
+              <span class="pill pro">Renovável</span>
+              <span class="pill">Brasil é líder</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <figure class="pv-photo pv-card-photo" style="margin: 0">
+              <img
+                src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/cd799129c18c.jpg"
+                alt="Planta industrial ao lado de grande array de painéis solares"
+              />
+              <figcaption>H₂ de baixa emissão: energia renovável</figcaption>
+            </figure>
+            <div class="card-title">⚡ Hidrogênio (H₂-DRI)</div>
+            <ul class="key-list">
+              <li>O H₂ reduz o minério e libera <b>água</b>, não CO₂.</li>
+              <li>Exige <b>eletricidade renovável</b> em larga escala.</li>
+              <li>
+                Pilotos como o <b>HYBRIT</b> já entregam aço sem carvão fóssil.
+              </li>
+            </ul>
+            <div class="pill-row">
+              <span class="pill info">Subproduto: água</span>
+              <span class="pill warn">Custo do H₂</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <figure class="pv-photo pv-card-photo" style="margin: 0">
+              <img
+                src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/d07851c8751f.jpg"
+                alt="Planta industrial com chaminés e dutos cercada por vegetação"
+              />
+              <figcaption>CCUS: captura na chaminé</figcaption>
+            </figure>
+            <div class="card-title">🏭 CCUS</div>
+            <ul class="key-list">
+              <li><b>Capturar</b> o CO₂ do gás industrial antes da emissão.</li>
+              <li>
+                <b>Usar</b> na química e no concreto ou <b>armazenar</b> no
+                subsolo.
+              </li>
+              <li>Trata as emissões dos fornos que continuarem com carbono.</li>
+            </ul>
+            <div class="pill-row">
+              <span class="pill info">Captura ≈ 90%</span>
+              <span class="pill warn">Energia extra</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="example-banner">
+          <div class="example-icon">🧭</div>
+          <div class="example-text">
+            <b>Regra de bolso</b>
+            <span
+              >Descarbonizar o aço é <b>trocar a origem do carbono</b> (biomassa
+              ou H₂) e, onde o carbono continuar, <b>capturá-lo</b>. Completam o
+              pacote a <b>eficiência energética</b> e a
+              <b>reciclagem de sucata</b> no forno elétrico.</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: TÓPICO 02 — BIOCARVÃO E CARVÃO VEGETAL SUSTENTÁVEL -->
+      <section class="slide" id="pv-slide-2">
+        <div class="slide-header">
+          <div>
+            <div class="kicker">
+              TÓPICO 02 · BIOCARVÃO &amp; CARVÃO VEGETAL SUSTENTÁVEL
+            </div>
+            <h1>Biocarvão e Carvão <span>Vegetal Sustentável</span></h1>
+          </div>
+          <div class="slide-subtitle">
+            A rota brasileira:
+            <b style="color: var(--orange)">carbono renovável</b> de floresta
+            plantada
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card" style="justify-content: space-between">
+            <div>
+              <div class="card-title">🌲 Da floresta ao alto-forno</div>
+              <ul class="key-list">
+                <li>
+                  Eucalipto em <b>ciclo de ~7 anos com replantio</b>: enquanto
+                  cresce, a floresta reabsorve CO₂ da atmosfera.
+                </li>
+                <li>
+                  <b>Pirólise (400–700 °C sem ar)</b>: a madeira vira carvão
+                  vegetal de alto carbono fixo e quase sem enxofre.
+                </li>
+                <li>
+                  No alto-forno, o carvão vegetal
+                  <b>substitui o coque mineral</b> — é a rota do "gusa verde".
+                </li>
+                <li>
+                  O CO₂ liberado é <b>biogênico</b>: estava no ar antes de ser
+                  fixado pela árvore — ciclo fechado.
+                </li>
+              </ul>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <b>1. Floresta plantada</b> → <b>2. Pirólise</b> (carvoaria) →
+                <b>3. Alto-forno a carvão</b> → gusa verde
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+              min-height: 0;
+            "
+          >
+            <figure
+              class="pv-photo"
+              style="flex: 1 1 0; min-height: 160px; margin: 0"
+            >
+              <img
+                src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/b61e175e3316.jpg"
+                alt="Toras de madeira empilhadas em floresta plantada com trabalhadores"
+              />
+              <figcaption>
+                Floresta plantada: matéria-prima renovável do carvão vegetal
+              </figcaption>
+            </figure>
+            <figure
+              class="pv-photo"
+              style="flex: 1 1 0; min-height: 160px; margin: 0"
+            >
+              <img
+                src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/6cd0e21f2ea8.jpg"
+                alt="Trabalhador retirando carvão vegetal de forno rústico de barro"
+              />
+              <figcaption>
+                Carvoaria: fornos de carbonização (pirólise) da madeira
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="example-banner">
+          <div class="example-icon">🇧🇷</div>
+          <div class="example-text">
+            <b>Exemplo prático</b>
+            <span
+              >Em Minas Gerais, alto-fornos a carvão vegetal (Gerdau, Aços
+              Villares, Gusa Brasil) produzem o <b>gusa verde</b>: a pegada cai
+              para <b>≈ 0,5 t CO₂/t</b> — cerca de
+              <b>um quarto da rota a coque</b>. Certificações
+              <b>FSC / CERFLOR</b> garantem a origem legal da madeira.</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: TÓPICO 03 — HIDROGÊNIO DE BAIXA EMISSÃO E REDUÇÃO DIRETA -->
+      <section class="slide" id="pv-slide-3">
+        <div class="slide-header">
+          <div>
+            <div class="kicker">
+              TÓPICO 03 · H₂ DE BAIXA EMISSÃO &amp; REDUÇÃO DIRETA
+            </div>
+            <h1>Hidrogênio de Baixa Emissão e <span>Redução Direta</span></h1>
+          </div>
+          <div class="slide-subtitle">
+            <b style="color: var(--orange)">Fe₂O₃ + 3H₂ → 2Fe + 3H₂O</b> — o
+            subproduto é água
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card" style="justify-content: space-between">
+            <div>
+              <div class="card-title">⚗️ Redução direta com H₂ (DRI)</div>
+              <ul class="key-list">
+                <li>
+                  No DRI, o minério é reduzido
+                  <b>abaixo da temperatura de fusão</b> e vira ferro esponja
+                  (90–97% Fe).
+                </li>
+                <li>
+                  Com H₂, a reação libera <b>vapor de água</b> em vez de CO₂ —
+                  emissão quase zero na redução.
+                </li>
+                <li>
+                  H₂ verde: <b>eletrólise da água</b> com eletricidade solar e
+                  eólica.
+                </li>
+                <li>
+                  Marcos: o <b>HYBRIT</b> (Suécia) entregou o primeiro aço sem
+                  fóssil em 2021; fornos shaft já são <b>"H₂-ready"</b>.
+                </li>
+              </ul>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <b>1. H₂ verde</b> (eletrólise) → <b>2. Reator DRI</b> →
+                <b>3. Ferro esponja</b> → <b>4. FEA</b> → aço
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+              min-height: 0;
+            "
+          >
+            <figure
+              class="pv-photo"
+              style="flex: 1 1 0; min-height: 160px; margin: 0"
+            >
+              <img
+                src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/e60e4b25c441.jpg"
+                alt="Renderização de planta de hidrogênio com tanques H2, painéis solares e eólicas"
+              />
+              <figcaption>
+                Planta de H₂: solar e eólica alimentam a eletrólise da água
+              </figcaption>
+            </figure>
+            <figure
+              class="pv-photo"
+              style="flex: 1 1 0; min-height: 160px; margin: 0"
+            >
+              <img
+                src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f9196a0310a7.jpg"
+                alt="Instalação industrial de hidrogênio com tanques criogênicos"
+              />
+              <figcaption>
+                H₂ industrial: infraestrutura que começa a servir à siderurgia
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="example-banner">
+          <div class="example-icon">🔋</div>
+          <div class="example-text">
+            <b>Por que importa</b>
+            <span
+              >Com H₂ verde e energia renovável, a rota H₂-DRI-FEA pode cair de
+              <b>≈ 2 t para menos de 0,1 t de CO₂ por tonelada</b> de aço. Os
+              desafios: <b>custo do H₂</b>, demanda elétrica de
+              <b>≈ 3,5 MWh/t</b> e armazenamento do gás.</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: TÓPICO 04 — CAPTURA, UTILIZAÇÃO E ARMAZENAMENTO DE CARBONO -->
+      <section class="slide" id="pv-slide-4">
+        <div class="slide-header">
+          <div>
+            <div class="kicker">
+              TÓPICO 04 · CAPTURA, UTILIZAÇÃO E ARMAZENAMENTO DE CARBONO
+            </div>
+            <h1>CCUS: Capturar, Usar e <span>Armazenar</span></h1>
+          </div>
+          <div class="slide-subtitle">
+            Até <b style="color: var(--orange)">≈ 90%</b> do CO₂ da chaminé pode
+            ser capturado
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card" style="justify-content: space-between">
+            <div>
+              <div class="card-title">🫧 Como se captura</div>
+              <ul class="key-list">
+                <li>
+                  <b>Pós-combustão</b>: solventes químicos (aminas) absorvem o
+                  CO₂ do gás industrial.
+                </li>
+                <li>
+                  O CO₂ é <b>comprimido e liquefeito</b> para transporte por
+                  duto ou navio.
+                </li>
+                <li>
+                  O gás de alto-forno é <b>rico em CO₂</b> — concentração alta
+                  facilita a captura.
+                </li>
+                <li>
+                  Gargalos: <b>penalidade energética</b> (10–30%) e custo por
+                  tonelada capturada.
+                </li>
+              </ul>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <b>1. Captura</b> (aminas) → <b>2. Compressão e transporte</b> →
+                <b>3. Uso ou armazenamento</b>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="justify-content: space-between">
+            <div>
+              <div class="card-title">📦 Para onde vai o CO₂</div>
+              <ul class="key-list">
+                <li>
+                  <b>Utilização (CCU)</b>: ureia, metanol, combustíveis
+                  sintéticos e concreto carbonatado.
+                </li>
+                <li>
+                  <b>Armazenamento (CCS)</b>: injeção em aquíferos salinos e
+                  formações geológicas.
+                </li>
+                <li>
+                  Referências: <b>Brevik</b> (Noruega), <b>Quest</b> (Canadá) e
+                  a reinjeção no <b>pré-sal brasileiro</b>.
+                </li>
+                <li>
+                  Na siderurgia, o CCUS trata o CO₂ <b>remanescente</b> das
+                  rotas com carbono.
+                </li>
+              </ul>
+            </div>
+            <div class="pill-row">
+              <span class="pill info">CCU: produtos</span>
+              <span class="pill pro">CCS: subsolo</span>
+              <span class="pill warn">Custo ainda alto</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; flex-shrink: 0">
+          <figure
+            class="pv-photo"
+            style="flex: 1 1 0; height: 150px; margin: 0"
+          >
+            <img
+              src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/20c9fa4fdf75.jpg"
+              alt="Unidade industrial com dutos, válvulas e tanques de processamento de gás"
+            />
+            <figcaption>
+              Unidade de captura: separação e compressão do CO₂
+            </figcaption>
+          </figure>
+          <figure
+            class="pv-photo"
+            style="flex: 1 1 0; height: 150px; margin: 0"
+          >
+            <img
+              src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/31516a0c2b9c.jpg"
+              alt="Ilustração de injeção de CO2 em camadas geológicas profundas"
+            />
+            <figcaption>
+              Armazenamento geológico: o CO₂ fica retido em camadas profundas
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: SÍNTESE — ROTAS PARA O AÇO DE BAIXO CARBONO -->
+      <section class="slide" id="pv-slide-5">
+        <div class="slide-header">
+          <div>
+            <div class="kicker">SÍNTESE · EMISSÃO DE CO₂</div>
+            <h1>Rumo ao Aço de <span>Baixo Carbono</span></h1>
+          </div>
+          <div class="slide-subtitle">
+            Cada rota ataca <b style="color: var(--orange)">uma parte</b> do
+            problema
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-title">
+              <span>Biocarvão</span>
+              <span class="big-number" style="color: var(--green)"
+                >≈ 0,5 t</span
+              >
+            </div>
+            <ul class="key-list">
+              <li>CO₂ por tonelada na rota do gusa verde brasileiro.</li>
+              <li>Carbono biogênico de floresta plantada certificada.</li>
+            </ul>
+            <div class="pill-row">
+              <span class="pill pro">Já em operação</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span>H₂-DRI</span>
+              <span class="big-number" style="color: var(--blue)"
+                >&lt; 0,1 t</span
+              >
+            </div>
+            <ul class="key-list">
+              <li>CO₂ por tonelada com hidrogênio verde e energia limpa.</li>
+              <li>O subproduto da redução é água — mas o H₂ ainda é caro.</li>
+            </ul>
+            <div class="pill-row">
+              <span class="pill info">Pilotos industriais</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span>CCUS</span>
+              <span class="big-number" style="color: var(--orange)">≈ 90%</span>
+            </div>
+            <ul class="key-list">
+              <li>Do CO₂ da chaminé pode ser capturado e estocado.</li>
+              <li>Custo e penalidade energética ainda limitam a escala.</li>
+            </ul>
+            <div class="pill-row">
+              <span class="pill warn">Em escala crescente</span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="card"
+          style="
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            flex: 1;
+          "
+        >
+          <div style="font-size: clamp(22px, 2vw, 30px); font-weight: 800">
+            🌍
+            <span
+              style="
+                background: linear-gradient(90deg, var(--orange), #ffb27a);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+              "
+              >Descarbonizar o aço é combinar rotas — não escolher uma só</span
+            >
+          </div>
+          <p
+            style="
+              font-size: clamp(17px, 1.4vw, 21px);
+              color: #cbd5e1;
+              line-height: 1.45;
+              max-width: 920px;
+            "
+          >
+            O biocarvão já corta emissões no Brasil hoje; o hidrogênio promete o
+            aço quase zero-carbono; o CCUS limpa o que sobrar nas chaminés.
+            Somadas à <b>reciclagem de sucata</b> e à
+            <b>eficiência energética</b>, as quatro frentes fazem do aço — o
+            material da civilização — também um material
+            <b>climaticamente viável</b>.
+          </p>
+          <div
+            class="pill-row"
+            style="justify-content: center; margin-top: 4px"
+          >
+            <span class="pill pro">Carbono renovável</span>
+            <span class="pill info">H₂ verde</span>
+            <span class="pill warn">CCUS</span>
+            <span class="pill">04 · Pedro Vicente</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- BARRA DE NAVEGAÇÃO INFERIOR PARA CELULARES E TABLETS (ALUNO 04) -->
+    <footer class="mobile-slide-footer">
+      <button class="mob-nav-btn" onclick="pv_goSlide(pv_currentSlide - 1)">
+        ← Anterior
+      </button>
+      <span class="mob-slide-indicator" id="pvMobSlideCounter"
+        >SLIDE 01 / 06</span
+      >
+      <button class="mob-nav-btn" onclick="pv_goSlide(pv_currentSlide + 1)">
+        Próximo →
+      </button>
+    </footer>
+    <script>
+      /* =========================================================
+     ALUNO 04 (PEDRO VICENTE) — NAVEGAÇÃO DE SLIDES ISOLADA
+     IIFE + prefixo pv_ para NÃO conflitar com o JS dos Alunos 02 e 07
+     ========================================================= */
+      (function () {
+        var pvTotal = 6;
+        window.pv_currentSlide = 0;
+
+        window.pv_goSlide = function (idx) {
+          window.pv_currentSlide = (idx + pvTotal) % pvTotal;
+          var mod = document.getElementById("student-4");
+          if (!mod) return;
+          mod.querySelectorAll(".slide").forEach(function (s, i) {
+            s.classList.toggle("active", i === window.pv_currentSlide);
+          });
+          mod.querySelectorAll(".slide-tab").forEach(function (t, i) {
+            var isAct = i === window.pv_currentSlide;
+            t.classList.toggle("active", isAct);
+            if (isAct && t.scrollIntoView) {
+              t.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+                inline: "center",
+              });
+            }
+          });
+          var stage = mod.querySelector(".slides-stage");
+          if (stage) stage.scrollTop = 0;
+          var mob = document.getElementById("pvMobSlideCounter");
+          if (mob)
+            mob.innerText =
+              "SLIDE 0" + (window.pv_currentSlide + 1) + " / 0" + pvTotal;
+        };
+
+        window.addEventListener("keydown", function (e) {
+          if (e.target && e.target.tagName === "INPUT") return;
+          if (e.key === "ArrowRight")
+            window.pv_goSlide(window.pv_currentSlide + 1);
+          if (e.key === "ArrowLeft")
+            window.pv_goSlide(window.pv_currentSlide - 1);
+        });
+      })();
+    </script>
+
+    <script src="../assets/js/atmosfera.js"></script>
+    <script src="../assets/js/aluno-comum.js"></script>
+  </body>
+</html>

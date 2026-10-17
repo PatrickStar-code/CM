@@ -1,0 +1,2135 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>07 · Gustavo — Ligas, Estruturas 3D & Tratamentos Térmicos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <style>
+        /* ===== HARMONIZAÇÃO VISUAL DO ALUNO 07 ==========================
+           Mesma linguagem do Aluno 02: paleta restrita laranja (marca) +
+           azul (apoio), verde/vermelho só com função semântica (pro/con,
+           vantagens/desvantagens) e âmbar para avisos.
+           - Cards: acento superior laranja único (fim das bordas multicoloridas)
+           - Títulos de card: neutros
+           - Dígitos AISI: neutros (o código 00A00B continua em laranja)
+           - Barras de propriedades: laranja da marca
+           - Cores dinâmicas (fases/tratamentos) padronizadas no JS */
+        #student-7 {
+          --amber: #fbbf24;
+        }
+        #student-7 .card {
+          border-top: 3px solid rgba(255, 122, 47, 0.4) !important;
+        }
+        #student-7 .card-title {
+          color: var(--text) !important;
+        }
+        #student-7 .pill.warn {
+          color: var(--amber);
+          border-color: rgba(251, 191, 36, 0.42);
+          background: rgba(251, 191, 36, 0.09);
+        }
+        #student-7 .aisi-digit {
+          border: 1.5px solid rgba(148, 163, 184, 0.45) !important;
+          box-shadow: none;
+        }
+        #student-7 .aisi-digit b {
+          color: var(--text) !important;
+        }
+        #student-7 .prop-fill {
+          background: var(--orange) !important;
+          color: var(--orange) !important;
+        }
+      
+    </style>
+  </head>
+  <body id="student-7" class="aluno-page">
+    <canvas id="bgCanvas"></canvas>
+    <div class="vignette"></div>
+
+<header class="sub-header">
+        <div class="brand">
+          <div class="brand-icon">Fe</div>
+          <div>
+            <span class="brand-title">CIÊNCIA DOS MATERIAIS</span>
+            <span class="brand-sub"
+              >07 Gustavo · Ligas, Estruturas 3D &amp; Tratamentos
+              Térmicos</span
+            >
+          </div>
+        </div>
+
+        <nav class="slide-nav" id="slideNav">
+          <button class="slide-tab active" onclick="goSlide(0)">
+            <span class="num">01</span>Classificação &amp; AISI
+          </button>
+          <button class="slide-tab" onclick="goSlide(1)">
+            <span class="num">02</span>Elementos de Liga
+          </button>
+          <button class="slide-tab" onclick="goSlide(2)">
+            <span class="num">03</span>Propriedades (3D)
+          </button>
+          <button class="slide-tab" onclick="goSlide(3)">
+            <span class="num">04</span>Dissolução 3D (Fe₃C→γ)
+          </button>
+          <button class="slide-tab" onclick="goSlide(4)">
+            <span class="num">05</span>Fases Cristalinas 3D
+          </button>
+          <button class="slide-tab" onclick="goSlide(5)">
+            <span class="num">06</span>Tratamentos Térmicos
+          </button>
+        </nav>
+      </header>
+
+      <div class="slides-stage">
+        <!-- SLIDE 1: CLASSIFICAÇÃO DOS AÇOS & NORMA AISI -->
+        <section class="slide active" id="slide-0">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">CAPÍTULO 01 · FUNDAMENTOS</div>
+              <h1>Classificação dos <span>Aços</span></h1>
+            </div>
+            <div class="slide-subtitle">
+              Liga Metálica Ferro + Carbono:
+              <b style="color: var(--orange)">0,008% a 2,11% C</b>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="card" style="border-top: 5px solid var(--green)">
+              <div class="card-title">
+                <span>Baixo Carbono</span>
+                <span class="big-number" style="color: var(--green)"
+                  >&lt; 0,25%</span
+                >
+              </div>
+              <ul class="key-list">
+                <li>
+                  Altíssima <b>ductilidade</b> (fácil de dobrar e estampar)
+                </li>
+                <li>Excelente soldabilidade</li>
+                <li>Baixa dureza (não endurece por têmpera)</li>
+              </ul>
+              <div class="pill-row">
+                <span class="pill pro">Chapas de Carro</span>
+                <span class="pill info">Arames &amp; Perfis</span>
+              </div>
+            </div>
+
+            <div class="card" style="border-top: 5px solid var(--blue)">
+              <div class="card-title">
+                <span>Médio Carbono</span>
+                <span class="big-number" style="color: var(--blue)"
+                  >0,25% – 0,60%</span
+                >
+              </div>
+              <ul class="key-list">
+                <li>Equilíbrio entre <b>Resistência e Tenacidade</b></li>
+                <li>Excelente resposta à <b>Têmpera e Revenido</b></li>
+                <li>Frequentemente ligado com <b>Cr, Ni e Mo</b></li>
+              </ul>
+              <div class="pill-row">
+                <span class="pill info">Engrenagens &amp; Eixos</span>
+                <span class="pill pro">Virabrequins</span>
+              </div>
+            </div>
+
+            <div class="card" style="border-top: 5px solid var(--orange)">
+              <div class="card-title">
+                <span>Alto Carbono</span>
+                <span class="big-number" style="color: var(--orange)"
+                  >&gt; 0,60%</span
+                >
+              </div>
+              <ul class="key-list">
+                <li><b>Máxima dureza</b> e resistência ao desgaste</li>
+                <li>Mantém o fio de corte sob atrito severo</li>
+                <li>Menor ductilidade (mais propenso a trincas)</li>
+              </ul>
+              <div class="pill-row">
+                <span class="pill warn">Brocas &amp; Facas</span>
+                <span class="pill warn">Molas &amp; Rolamentos</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="aisi-box">
+            <div style="max-width: 390px">
+              <div class="kicker">SISTEMA NORMATIVO</div>
+              <div
+                style="
+                  font-size: 26px;
+                  font-weight: 800;
+                  color: var(--text);
+                  margin-bottom: 6px;
+                "
+              >
+                Padrão AISI:
+                <span style="color: var(--orange); font-family: var(--mono)"
+                  >00A00B</span
+                >
+              </div>
+              <p style="font-size: 19px; color: #cbd5e1; line-height: 1.4">
+                Quanto à composição química: adições de <b>Cromo (Cr)</b>,
+                <b>Níquel (Ni)</b>, <b>Molibdênio (Mo)</b> e outros elementos de
+                liga.
+              </p>
+            </div>
+
+            <div class="aisi-code">
+              <div class="aisi-digit" style="border-color: var(--blue)">
+                <b style="color: var(--blue)">00</b>
+                <span>Tipo de Aço</span>
+              </div>
+              <div class="aisi-digit" style="border-color: var(--green)">
+                <b style="color: var(--green)">A</b>
+                <span>Acréscimo de Liga</span>
+              </div>
+              <div class="aisi-digit" style="border-color: var(--orange)">
+                <b style="color: var(--orange)">00</b>
+                <span>% de Carbono</span>
+              </div>
+              <div class="aisi-digit" style="border-color: var(--purple)">
+                <b style="color: var(--purple)">B</b>
+                <span>Requisito Qualidade</span>
+              </div>
+            </div>
+
+            <div
+              class="pill warn"
+              style="
+                max-width: 330px;
+                font-size: 17.5px;
+                line-height: 1.38;
+                padding: 13px 16px;
+              "
+            >
+              💡 Normalmente usam-se <b>4 dígitos</b>, ou <b>3 dígitos</b> no
+              final quando o teor de carbono <b>ultrapassa 1%</b> (ex:
+              52<b>100</b>).
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: ELEMENTOS DE LIGA & IMPUREZAS -->
+        <section class="slide" id="slide-1">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">CAPÍTULO 02 · QUÍMICA METALÚRGICA</div>
+              <h1>Elementos de <span>Liga</span> e Impurezas</h1>
+            </div>
+            <div style="display: flex; gap: 12px">
+              <span class="pill info" style="font-size: 18px"
+                >Baixa Liga: &lt; 5%</span
+              >
+              <span class="pill warn" style="font-size: 18px"
+                >Liga Especial: &gt; 5%</span
+              >
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="card" style="border-top: 5px solid var(--red)">
+              <div class="card-title">
+                ⚠️ Impurezas: Fósforo e Enxofre
+              </div>
+              <ul class="key-list">
+                <li>
+                  <b>Fósforo (P):</b> Aumenta a dureza, mas causa severa
+                  <b>fragilidade a frio</b>.
+                </li>
+                <li>
+                  <b>Enxofre (S):</b> Forma <b>FeS</b> (baixo ponto de fusão) →
+                  torna o aço quebradiço na conformação.
+                </li>
+                <li>
+                  <i>Exceção do S:</i> Pode ser adicionado para melhorar a
+                  <b>usinabilidade</b>.
+                </li>
+              </ul>
+            </div>
+
+            <div class="card" style="border-top: 5px solid var(--blue)">
+              <div class="card-title">
+                ⭐ Destaques: Silício (Si) e Alumínio (Al)
+              </div>
+              <ul class="key-list">
+                <li>Utilizados diretamente na <b>desoxidação do aço</b>.</li>
+                <li><b>Reduzem a formação de carbonetos</b> (cementita).</li>
+                <li>
+                  <b>Favorecem a austenita retida</b> (essencial na Têmpera e
+                  Partição!).
+                </li>
+              </ul>
+            </div>
+
+            <div class="card" style="border-top: 5px solid var(--green)">
+              <div class="card-title">
+                ⭐ Destaque: Manganês (Mn)
+              </div>
+              <ul class="key-list">
+                <li>
+                  Reage com o enxofre formando <b>MnS</b> (sulfeto de manganês).
+                </li>
+                <li><b>Evita a formação do vilão FeS!</b></li>
+                <li>
+                  Aumenta a temperabilidade e favorece a austenita retida.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <div
+              style="
+                font: 700 12.5px var(--mono);
+                color: var(--muted);
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+              "
+            >
+              Catálogo Interativo — Clique em qualquer elemento para exibir sua
+              função no projetor:
+            </div>
+
+            <div class="elem-grid" id="elemGrid"></div>
+
+            <div
+              style="
+                background: rgba(7, 11, 20, 0.9);
+                border-left: 6px solid var(--orange);
+                padding: 12px 20px;
+                border-radius: 0 12px 12px 0;
+              "
+            >
+              <div
+                id="elemTitle"
+                style="
+                  font-size: 26px;
+                  font-weight: 800;
+                  color: var(--orange);
+                  margin-bottom: 3px;
+                "
+              >
+                Carbono (C)
+              </div>
+              <div
+                id="elemDesc"
+                style="font-size: 20px; color: #f1f5f9; line-height: 1.35"
+              >
+                Elemento fundamental do aço; participa da formação de perlita,
+                grafite e martensita. Aumenta a dureza e a resistência, mas pode
+                reduzir a tenacidade e a ductilidade.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: PROPRIEDADES MECÂNICAS (COM EXEMPLOS PRÁTICOS 3D!) -->
+        <section class="slide" id="slide-2">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">CAPÍTULO 03 · COMPORTAMENTO FÍSICO</div>
+              <h1>Principais <span>Propriedades Mecânicas</span></h1>
+            </div>
+            <div class="slide-subtitle">
+              Exemplos práticos do dia a dia em simulação 3D
+            </div>
+          </div>
+
+          <div class="big-btn-group" id="propButtons">
+            <button class="big-btn active" onclick="selectProp('dureza', this)">
+              1. Dureza (Broca)
+            </button>
+            <button class="big-btn" onclick="selectProp('resistencia', this)">
+              2. Resistência (Vergalhão)
+            </button>
+            <button class="big-btn" onclick="selectProp('ductilidade', this)">
+              3. Ductilidade (Arame)
+            </button>
+            <button class="big-btn" onclick="selectProp('tenacidade', this)">
+              4. Tenacidade (Marreta)
+            </button>
+            <button class="big-btn" onclick="selectProp('fragilidade', this)">
+              5. Fragilidade (Quebra Brusca)
+            </button>
+          </div>
+
+          <div class="split-3d">
+            <div class="card" style="justify-content: space-between">
+              <div>
+                <div
+                  id="propTitle"
+                  style="
+                    font-size: 26px;
+                    font-weight: 800;
+                    color: var(--orange);
+                    margin-bottom: 8px;
+                  "
+                >
+                  1. Dureza
+                </div>
+                <p
+                  id="propDefinition"
+                  style="
+                    font-size: 20px;
+                    line-height: 1.38;
+                    color: #f1f5f9;
+                    font-weight: 500;
+                  "
+                >
+                  Resistência que o material oferece à
+                  <b>penetração, ao risco e ao desgaste abrasivo</b>.
+                </p>
+              </div>
+
+              <div class="example-banner">
+                <div class="example-icon" id="propIcon">🔩</div>
+                <div class="example-text">
+                  <b id="propExTitle">Exemplo Prático: Broca de Aço / Faca</b>
+                  <span id="propExDesc"
+                    >Uma broca precisa furar outra chapa de metal sem amassar a
+                    ponta e sem perder o corte por atrito!</span
+                  >
+                </div>
+              </div>
+
+              <div class="flow-steps" id="propEffects"></div>
+            </div>
+
+            <div class="viewport-3d" id="stageProps">
+              <div class="badge-3d-top" id="prop3dBadge">
+                ENSAIO 3D: BROCA PERFURANDO CHAPA
+              </div>
+              <div class="legend-3d">
+                <span id="prop3dCaption" style="color: #e2e8f0"
+                  >A ponta martensítica penetra sem se desgastar</span
+                >
+                <span style="color: var(--muted); font-size: 15px"
+                  >🖱️ Arraste para orbitar</span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: AQUECIMENTO 3D — DISSOLUÇÃO CEMENTITA -> AUSTENITA -->
+        <section class="slide" id="slide-3">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">
+                CAPÍTULO 04 · TRANSFORMAÇÃO NO AQUECIMENTO
+              </div>
+              <h1>Dissolução: <span>Cementita → Austenita</span></h1>
+            </div>
+            <div class="slide-subtitle">
+              O que acontece quando aquecemos o aço acima de 727 °C
+            </div>
+          </div>
+
+          <div class="split-3d">
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                justify-content: space-between;
+              "
+            >
+              <div class="temp-control">
+                <div class="temp-header">
+                  <span>🔥 Temperatura do Forno</span>
+                  <span class="temp-val"
+                    ><span id="cemTempVal">25</span> °C</span
+                  >
+                </div>
+                <input
+                  type="range"
+                  id="cemSlider"
+                  class="giant-slider"
+                  min="25"
+                  max="1000"
+                  value="25"
+                  step="5"
+                />
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 15px;
+                    color: var(--muted);
+                    margin-top: 6px;
+                    font-weight: 700;
+                  "
+                >
+                  <span>25 °C (Ambiente)</span>
+                  <span style="color: var(--amber)"
+                    >727 °C (Zona Crítica)</span
+                  >
+                  <span style="color: var(--orange)">1000 °C (Austenita)</span>
+                </div>
+              </div>
+
+              <div class="big-btn-group">
+                <button class="big-btn" onclick="setCemTemp(25)">
+                  1. Cementita (25 °C)
+                </button>
+                <button class="big-btn" onclick="setCemTemp(815)">
+                  2. Dissolução (815 °C)
+                </button>
+                <button class="big-btn" onclick="setCemTemp(960)">
+                  3. Austenita (960 °C)
+                </button>
+              </div>
+
+              <div class="card" style="flex: 1; justify-content: center">
+                <div
+                  id="cemPhaseTitle"
+                  style="font-size: 26px; font-weight: 800; color: var(--orange)"
+                >
+                  Cementita — Fe₃C (Ortorrômbica)
+                </div>
+                <ul class="key-list" id="cemPhaseList">
+                  <li>
+                    Estrutura <b>Ortorrômbica</b> (retangular e assimétrica).
+                  </li>
+                  <li>
+                    Alta concentração de Carbono (<b>6,67% C</b>) preso na rede
+                    de Ferro.
+                  </li>
+                  <li>
+                    Arraste o slider acima de <b>727 °C</b> para ver a
+                    dissolução!
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="viewport-3d" id="stageCem">
+              <div class="badge-3d-top">CÉLULA UNITÁRIA 3D · AQUECIMENTO</div>
+              <div class="legend-3d">
+                <div>
+                  <span
+                    ><i
+                      class="dot"
+                      style="background: #60a5fa; box-shadow: 0 0 8px #60a5fa"
+                    ></i
+                    >Ferro (Fe)</span
+                  >
+                  <span style="margin-left: 20px"
+                    ><i
+                      class="dot"
+                      style="background: #ef4444; box-shadow: 0 0 8px #ef4444"
+                    ></i
+                    >Carbono (C)</span
+                  >
+                </div>
+                <span style="color: var(--muted); font-size: 15px"
+                  >🖱️ Arraste para girar</span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: RESFRIAMENTO 3D — ESTRUTURAS CRISTALINAS DO AÇO -->
+        <section class="slide" id="slide-4">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">
+                CAPÍTULO 05 · TRANSFORMAÇÃO NO RESFRIAMENTO
+              </div>
+              <h1>Estruturas Cristalinas: <span>O Destino do Carbono</span></h1>
+            </div>
+            <div class="slide-subtitle">
+              Por que Resfriamento Lento, Têmpera, Revenido e Q&amp;P geram
+              estruturas diferentes?
+            </div>
+          </div>
+
+          <div class="split-3d">
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+                justify-content: space-between;
+              "
+            >
+              <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px"
+                id="phaseBtns"
+              >
+                <button
+                  class="big-btn active"
+                  onclick="setCrystalPhase('CFC', this)"
+                >
+                  1. 🔥 Austenita (CFC)
+                </button>
+                <button class="big-btn" onclick="setCrystalPhase('CCC', this)">
+                  2. 🐢 Ferrita + Lamela
+                </button>
+                <button class="big-btn" onclick="setCrystalPhase('TCC', this)">
+                  3. ⚡ Martensita (TCC)
+                </button>
+                <button class="big-btn" onclick="setCrystalPhase('REV', this)">
+                  4. 🛡️ M. Revenida (Fe₃C)
+                </button>
+                <button
+                  class="big-btn"
+                  style="grid-column: span 2"
+                  onclick="setCrystalPhase('QP', this)"
+                >
+                  5. ⭐ Têmpera e Partição — Q&amp;P (Si/Al + Austenita Retida)
+                </button>
+              </div>
+
+              <div class="card" style="flex: 1; justify-content: center">
+                <div
+                  id="crysTitle"
+                  style="
+                    font-size: 26px;
+                    font-weight: 800;
+                    color: var(--orange);
+                  "
+                >
+                  1. Austenita — Cúbica de Faces Centradas (CFC)
+                </div>
+                <ul class="key-list" id="crysList">
+                  <li>
+                    Alta temperatura (<b>&gt; 727 °C</b>): Ferro nos 8 cantos e
+                    nas 6 faces.
+                  </li>
+                  <li>
+                    O vão central é amplo:
+                    <b>Carbono (vermelho) cabe sem distorcer o cubo</b>.
+                  </li>
+                  <li>Estrutura matriz antes do resfriamento.</li>
+                </ul>
+                <div class="pill-row" id="crysPills">
+                  <span class="pill info">Relação c/a = 1,000 (Cubo CFC)</span>
+                  <span class="pill pro">Tensão Interna: Baixa</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="viewport-3d" id="stageCrystal">
+              <div class="badge-3d-top" id="crys3dBadge">
+                FASE 1: AUSTENITA (MATRIZ QUENTE CFC)
+              </div>
+              <div class="legend-3d">
+                <div>
+                  <span><i class="dot" style="background: #60a5fa"></i>Fe</span>
+                  <span style="margin-left: 12px"
+                    ><i class="dot" style="background: #ef4444"></i>Carbono
+                    (C)</span
+                  >
+                  <span style="margin-left: 12px"
+                    ><i class="dot" style="background: #facc15"></i>Cementita
+                    (Fe₃C)</span
+                  >
+                  <span style="margin-left: 12px"
+                    ><i class="dot" style="background: #c084fc"></i>Si /
+                    Al</span
+                  >
+                </div>
+                <span style="color: var(--muted); font-size: 15px"
+                  >🖱️ Arraste para girar</span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 6: OS 6 TRATAMENTOS TÉRMICOS -->
+        <section class="slide" id="slide-5">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">CAPÍTULO 06 · PROCESSOS TÉRMICOS</div>
+              <h1>Tratamentos <span>Térmicos</span> dos Aços</h1>
+            </div>
+            <div class="slide-subtitle">
+              Do Recozimento Clássico à Têmpera e Partição (Q&amp;P)
+            </div>
+          </div>
+
+          <div class="big-btn-group" id="treatButtons">
+            <button
+              class="big-btn active"
+              onclick="selectTreat('recozimento', this)"
+            >
+              1. Recozimento
+            </button>
+            <button class="big-btn" onclick="selectTreat('normalizacao', this)">
+              2. Normalização
+            </button>
+            <button class="big-btn" onclick="selectTreat('alivio', this)">
+              3. Alívio de Tensões
+            </button>
+            <button class="big-btn" onclick="selectTreat('tempera', this)">
+              4. Têmpera
+            </button>
+            <button class="big-btn" onclick="selectTreat('revenido', this)">
+              5. Revenido
+            </button>
+            <button class="big-btn" onclick="selectTreat('qp', this)">
+              6. Têmpera e Partição (Q&amp;P)
+            </button>
+          </div>
+
+          <div class="grid-2" style="align-items: stretch">
+            <div class="card" style="justify-content: space-between">
+              <div
+                id="treatTitle"
+                style="font-size: 26px; font-weight: 800; color: var(--orange)"
+              >
+                1. Recozimento (Resfriamento no Forno)
+              </div>
+
+              <div class="flow-steps" id="treatSteps"></div>
+
+              <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px"
+              >
+                <div
+                  style="
+                    background: rgba(61, 220, 151, 0.08);
+                    border: 1.5px solid rgba(61, 220, 151, 0.45);
+                    border-radius: 14px;
+                    padding: 12px 16px;
+                  "
+                >
+                  <div
+                    style="
+                      color: var(--green);
+                      font-size: 16.5px;
+                      font-weight: 900;
+                      margin-bottom: 4px;
+                      letter-spacing: 0.05em;
+                    "
+                  >
+                    ✅ VANTAGENS
+                  </div>
+                  <div
+                    id="treatPros"
+                    style="
+                      font-size: 18.5px;
+                      color: #f1f5f9;
+                      line-height: 1.35;
+                      font-weight: 600;
+                    "
+                  ></div>
+                </div>
+                <div
+                  style="
+                    background: rgba(248, 113, 113, 0.08);
+                    border: 1.5px solid rgba(248, 113, 113, 0.45);
+                    border-radius: 14px;
+                    padding: 12px 16px;
+                  "
+                >
+                  <div
+                    style="
+                      color: var(--red);
+                      font-size: 16.5px;
+                      font-weight: 900;
+                      margin-bottom: 4px;
+                      letter-spacing: 0.05em;
+                    "
+                  >
+                    ⚠️ DESVANTAGENS
+                  </div>
+                  <div
+                    id="treatCons"
+                    style="
+                      font-size: 18.5px;
+                      color: #f1f5f9;
+                      line-height: 1.35;
+                      font-weight: 600;
+                    "
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="card"
+              style="
+                justify-content: space-between;
+                background: var(--glass-strong);
+              "
+            >
+              <div id="treatCurveSvg" style="width: 100%; height: 230px"></div>
+
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                  border-top: 1px solid var(--border);
+                  padding-top: 14px;
+                "
+              >
+                <div class="prop-meter">
+                  <span>Dureza / Resistência</span>
+                  <div class="prop-track">
+                    <div
+                      id="barHard"
+                      class="prop-fill"
+                      style="
+                        background: var(--orange);
+                        color: var(--orange);
+                        width: 25%;
+                      "
+                    ></div>
+                  </div>
+                </div>
+                <div class="prop-meter">
+                  <span>Ductilidade</span>
+                  <div class="prop-track">
+                    <div
+                      id="barDuct"
+                      class="prop-fill"
+                      style="
+                        background: var(--blue);
+                        color: var(--blue);
+                        width: 95%;
+                      "
+                    ></div>
+                  </div>
+                </div>
+                <div class="prop-meter">
+                  <span>Tenacidade</span>
+                  <div class="prop-track">
+                    <div
+                      id="barTough"
+                      class="prop-fill"
+                      style="
+                        background: var(--green);
+                        color: var(--green);
+                        width: 75%;
+                      "
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    <script src="../assets/js/atmosfera.js"></script>
+    <script src="../assets/js/aluno-comum.js"></script>
+    <script>
+/* =========================================================
+     NAVEGAÇÃO ENTRE SLIDES DO ALUNO 07 (GUSTAVO)
+     ========================================================= */
+      let currentSlide = 0;
+      const totalSlides = 6;
+
+      function goSlide(idx) {
+        currentSlide = (idx + totalSlides) % totalSlides;
+        document
+          .querySelectorAll("#student-7 .slide")
+          .forEach((s, i) => s.classList.toggle("active", i === currentSlide));
+        document
+          .querySelectorAll("#student-7 .slide-tab")
+          .forEach((t, i) => t.classList.toggle("active", i === currentSlide));
+        setTimeout(resize3DViewports, 40);
+      }
+
+      window.addEventListener("keydown", (e) => {
+        if (e.target.tagName === "INPUT") return;
+        if (e.key === "ArrowRight") goSlide(currentSlide + 1);
+        if (e.key === "ArrowLeft") goSlide(currentSlide - 1);
+      });
+
+      /* =========================================================
+     SLIDE 2: 18 ELEMENTOS DE LIGA
+     ========================================================= */
+      const ELEMENTS = [
+        {
+          sym: "C",
+          name: "Carbono (C)",
+          hl: true,
+          desc: "Elemento fundamental do aço; participa da formação de perlita, grafite e martensita. Aumenta a dureza e a resistência, mas pode reduzir a tenacidade e a ductilidade.",
+        },
+        {
+          sym: "Mn",
+          name: "Manganês (Mn)",
+          hl: true,
+          desc: "Reage com enxofre formando MnS (evita FeS); aumenta a temperabilidade; favorece a austenita retida; atua como desoxidante e melhora a trabalhabilidade a quente.",
+        },
+        {
+          sym: "Si",
+          name: "Silício (Si)",
+          hl: true,
+          desc: "Desoxidante do aço; reduz a formação de carbonetos e favorece a austenita retida; endurece a ferrita e melhora a resistência de aços temperados e revenidos.",
+        },
+        {
+          sym: "Al",
+          name: "Alumínio (Al)",
+          hl: true,
+          desc: "Atua como desoxidante; reduz a formação de carbonetos e favorece a austenita retida; refina o grão e permite endurecimento por nitretação.",
+        },
+        {
+          sym: "P",
+          name: "Fósforo (P) — Impureza",
+          hl: false,
+          desc: "Aumenta a dureza e a resistência à corrosão, mas reduz severamente a tenacidade e a ductilidade (fragilidade a frio) e fragiliza no revenido.",
+        },
+        {
+          sym: "S",
+          name: "Enxofre (S) — Impureza",
+          hl: false,
+          desc: "Forma FeS (baixo ponto de fusão), tornando o aço quebradiço em processos de conformação e prejudicando a solda. Adicionado apenas p/ melhorar a usinabilidade.",
+        },
+        {
+          sym: "Cr",
+          name: "Cromo (Cr)",
+          hl: false,
+          desc: "Aumenta moderadamente a temperabilidade; melhora a resistência ao amolecimento, à oxidação e a altas temperaturas. Com alto carbono, aumenta a resistência à abrasão.",
+        },
+        {
+          sym: "Ni",
+          name: "Níquel (Ni)",
+          hl: false,
+          desc: "Contribui para a temperabilidade e a tenacidade; favorece a austenita retida e estabiliza a estrutura austenítica em aços com alto teor de cromo.",
+        },
+        {
+          sym: "Mo",
+          name: "Molibdênio (Mo)",
+          hl: false,
+          desc: "Aumenta a dureza e a temperabilidade; melhora a resistência a altas temperaturas, à fluência e à corrosão; reduz a tendência à fragilidade no revenido.",
+        },
+        {
+          sym: "B",
+          name: "Boro (B)",
+          hl: false,
+          desc: "Aumenta significativamente a temperabilidade em pequenas adições, sem sacrificar a ductilidade ou a usinabilidade.",
+        },
+        {
+          sym: "V",
+          name: "Vanádio (V)",
+          hl: false,
+          desc: "Aumenta a temperabilidade em pequenas adições; refina o grão austenítico e melhora a resistência ao amolecimento durante o revenido.",
+        },
+        {
+          sym: "W",
+          name: "Tungstênio (W)",
+          hl: false,
+          desc: "Reduz o amolecimento durante o revenido; forma carbonetos resistentes à abrasão; aumenta a dureza a quente e contribui para a resistência à fluência.",
+        },
+        {
+          sym: "Nb",
+          name: "Nióbio (Nb)",
+          hl: false,
+          desc: "Refina o tamanho de grão e aumenta a resistência a altas temperaturas. Pode reduzir o endurecimento ao retirar carbono da matriz.",
+        },
+        {
+          sym: "Ti",
+          name: "Titânio (Ti)",
+          hl: false,
+          desc: "Forma carbonetos que restringem o crescimento de grãos; pode reduzir a dureza da martensita; estabiliza aços inoxidáveis e atua como desoxidante.",
+        },
+        {
+          sym: "Co",
+          name: "Cobalto (Co)",
+          hl: false,
+          desc: "Aumenta a resistência ao amolecimento em altas temperaturas.",
+        },
+        {
+          sym: "Cu",
+          name: "Cobre (Cu)",
+          hl: false,
+          desc: "Melhora a resistência à corrosão atmosférica; pode prejudicar a trabalhabilidade a quente.",
+        },
+        {
+          sym: "Ca",
+          name: "Cálcio (Ca)",
+          hl: false,
+          desc: "Melhora a usinabilidade quando usado como desoxidante; controla a forma das inclusões e melhora a resistência em aços HSLA.",
+        },
+        {
+          sym: "Pb",
+          name: "Chumbo (Pb)",
+          hl: false,
+          desc: "Melhora a usinabilidade; pode causar fragilização em temperaturas próximas ao seu ponto de fusão.",
+        },
+      ];
+
+      const elemGrid = document.getElementById("elemGrid");
+      ELEMENTS.forEach((el, i) => {
+        const btn = document.createElement("button");
+        btn.className =
+          "elem-btn" + (i === 0 ? " active" : "") + (el.hl ? " hl-elem" : "");
+        btn.innerHTML = `${el.sym}<small>${el.name.split(" ")[0]}</small>`;
+        btn.onclick = () => {
+          document
+            .querySelectorAll(".elem-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById("elemTitle").innerText = el.name;
+          document.getElementById("elemDesc").innerText = el.desc;
+        };
+        elemGrid.appendChild(btn);
+      });
+
+      /* =========================================================
+     SLIDE 3: PROPRIEDADES MECÂNICAS + SIMULADOR 3D DE EXEMPLOS REAIS
+     ========================================================= */
+      const PROPS_DATA = {
+        dureza: {
+          title: "1. Dureza",
+          def: "Resistência que a superfície do material oferece à <b>penetração, ao risco e ao desgaste abrasivo</b>.",
+          icon: "🔩",
+          exTitle: "Exemplo Prático: Broca de Aço / Faca de Corte",
+          exDesc:
+            "Uma broca precisa perfurar outra chapa de aço sem que sua ponta amasse ou perca o fio com o atrito!",
+          badge: "SIMULAÇÃO 3D: BROCA PERFURANDO AÇO",
+          caption:
+            "A broca (alta dureza / martensita) fura a chapa sem se desgastar",
+          steps: [
+            {
+              col: "var(--green)",
+              txt: "<b>Quem Eleva ao Máximo:</b> Martensita tetragonal (obtida na <b>Têmpera</b>).",
+            },
+            {
+              col: "var(--orange)",
+              txt: "<b>Quem Reduz:</b> O <b>Recozimento</b> amolece o aço quando precisamos usiná-lo.",
+            },
+          ],
+        },
+        resistencia: {
+          title: "2. Resistência Mecânica",
+          def: "Capacidade de suportar <b>cargas e tensões externas (tração, compressão, flexão)</b> sem sofrer deformação permanente ou ruptura.",
+          icon: "🏗️",
+          exTitle: "Exemplo Prático: Vergalhão / Viga de Ponte",
+          exDesc:
+            "O vergalhão dentro do concreto ou o cabo de uma ponte sustenta toneladas sem esticar nem ceder!",
+          badge: "SIMULAÇÃO 3D: VERGALHÃO SOB CARGA ESTRUTURAL",
+          caption:
+            "O vergalhão nervurado suporta alta tração/compressão mantendo sua forma",
+          steps: [
+            {
+              col: "var(--green)",
+              txt: "<b>Quem Aumenta:</b> A <b>Normalização</b> (perlita fina) e a <b>Têmpera</b> elevam muito a resistência.",
+            },
+            {
+              col: "var(--blue)",
+              txt: "<b>Objetivo:</b> Suportar grandes forças sem deformar a estrutura.",
+            },
+          ],
+        },
+        ductilidade: {
+          title: "3. Ductilidade",
+          def: "Capacidade do material de se <b>deformar plasticamente sem se romper</b> (ser estirado em fios ou dobrado).",
+          icon: "➰",
+          exTitle: "Exemplo Prático: Arame Recozido / Lataria de Carro",
+          exDesc:
+            "O arame de construção que o pedreiro torce e dobra várias vezes sem quebrar, ou uma chapa prensada!",
+          badge: "SIMULAÇÃO 3D: DOBRAMENTO DE ARAME RECOZIDO",
+          caption:
+            "O aço dúctil curva-se e alonga-se plasticamente sem trincar",
+          steps: [
+            {
+              col: "var(--green)",
+              txt: "<b>Máxima Ductilidade:</b> Aços <b>Recozidos</b> (ferrita macia + perlita grossa).",
+            },
+            {
+              col: "var(--red)",
+              txt: "<b>Mínima Ductilidade:</b> Aços <b>Temperados</b> não dobram (quebram antes).",
+            },
+          ],
+        },
+        tenacidade: {
+          title: "4. Tenacidade",
+          def: "Capacidade de <b>absorver energia de impactos e choques</b> e se deformar antes de fraturar.",
+          icon: "🔨",
+          exTitle: "Exemplo Prático: Marreta / Machado / Mola de Caminhão",
+          exDesc:
+            "Uma marreta dá pancadas violentas repetidas vezes absorvendo o choque sem estilhaçar na mão do operador!",
+          badge: "SIMULAÇÃO 3D: MARRETA ABSORVENDO IMPACTO",
+          caption: "O aço tenaz absorve a onda de choque sem sofrer fratura",
+          steps: [
+            {
+              col: "var(--green)",
+              txt: "<b>Como Alcançar:</b> Essencial aplicar o <b>Revenido</b> ou a <b>Têmpera e Partição (Q&P)</b>.",
+            },
+            {
+              col: "var(--blue)",
+              txt: "<b>Equilíbrio:</b> Une boa resistência com alta absorção de energia.",
+            },
+          ],
+        },
+        fragilidade: {
+          title: "5. Fragilidade",
+          def: "Oposto da ductilidade e tenacidade: o material <b>se rompe de forma brusca, sem deformação prévia</b>.",
+          icon: "💥",
+          exTitle: "Exemplo Prático: Lima / Peça Temperada caindo no chão",
+          exDesc:
+            "Igual ao vidro: uma peça recém-temperada (sem revenido) é duríssima ao risco, mas se cair no chão, parte ao meio!",
+          badge: "SIMULAÇÃO 3D: FRATURA BRUSCA SEM DEFORMAÇÃO",
+          caption:
+            "Sob impacto, o aço frágil trinca e estilhaça instantaneamente",
+          steps: [
+            {
+              col: "var(--red)",
+              txt: "<b>Causa Química:</b> Excesso de impurezas como o <b>Fósforo (P)</b> (fragilidade a frio).",
+            },
+            {
+              col: "var(--red)",
+              txt: "<b>Causa Térmica:</b> <b>Têmpera pura sem Revenido</b> posterior.",
+            },
+          ],
+        },
+      };
+
+      let currentPropKey = "dureza";
+      function selectProp(key, btnEl) {
+        currentPropKey = key;
+        if (btnEl) {
+          document
+            .querySelectorAll("#propButtons .big-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btnEl.classList.add("active");
+        }
+        const d = PROPS_DATA[key];
+        document.getElementById("propTitle").innerText = d.title;
+        document.getElementById("propDefinition").innerHTML = d.def;
+        document.getElementById("propIcon").innerText = d.icon;
+        document.getElementById("propExTitle").innerText = d.exTitle;
+        document.getElementById("propExDesc").innerText = d.exDesc;
+        document.getElementById("prop3dBadge").innerText = d.badge;
+        document.getElementById("prop3dCaption").innerText = d.caption;
+        document.getElementById("propEffects").innerHTML = d.steps
+          .map(
+            (s) =>
+              `<div class="flow-step" style="border-left-color:${s.col}">${s.txt}</div>`,
+          )
+          .join("");
+        updateProp3DVisibility();
+      }
+
+      /* CENA 3D DO SLIDE 3 */
+      const propContainer = document.getElementById("stageProps");
+      const sceneProp = new THREE.Scene();
+      const camProp = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+      camProp.position.set(0, 2.2, 6.8);
+      camProp.lookAt(0, 0.3, 0);
+
+      const rendProp = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+      });
+      propContainer.insertBefore(rendProp.domElement, propContainer.firstChild);
+
+      sceneProp.add(new THREE.AmbientLight(0x9fb8d8, 0.75));
+      const dirProp = new THREE.DirectionalLight(0xfff0dd, 1.2);
+      dirProp.position.set(5, 8, 6);
+      sceneProp.add(dirProp);
+      const rimProp = new THREE.PointLight(0xff7a2f, 0.9, 15);
+      rimProp.position.set(-4, 2, 3);
+      sceneProp.add(rimProp);
+
+      const grpPropRoot = new THREE.Group();
+      sceneProp.add(grpPropRoot);
+
+      const steelShiny = new THREE.MeshStandardMaterial({
+        color: 0xcbd5e1,
+        metalness: 0.85,
+        roughness: 0.22,
+      });
+      const steelDark = new THREE.MeshStandardMaterial({
+        color: 0x475569,
+        metalness: 0.75,
+        roughness: 0.38,
+      });
+      const orangeGlowMat = new THREE.MeshStandardMaterial({
+        color: 0xff7a2f,
+        emissive: 0xff5500,
+        emissiveIntensity: 0.6,
+        roughness: 0.3,
+      });
+      const blueGlowMat = new THREE.MeshStandardMaterial({
+        color: 0x38bdf8,
+        emissive: 0x0284c7,
+        emissiveIntensity: 0.4,
+        metalness: 0.6,
+        roughness: 0.25,
+      });
+
+      const grpDureza = new THREE.Group();
+      const drillAssembly = new THREE.Group();
+      const shank = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.42, 0.42, 1.8, 28),
+        steelDark,
+      );
+      shank.position.y = 1.5;
+      drillAssembly.add(shank);
+      for (let i = 0; i < 12; i++) {
+        const flute = new THREE.Mesh(
+          new THREE.TorusGeometry(0.43, 0.08, 10, 24),
+          steelShiny,
+        );
+        flute.rotation.x = Math.PI / 2 + 0.35;
+        flute.position.y = 0.2 + i * 0.14;
+        drillAssembly.add(flute);
+      }
+      const drillTip = new THREE.Mesh(
+        new THREE.ConeGeometry(0.45, 0.75, 28),
+        orangeGlowMat,
+      );
+      drillTip.rotation.x = Math.PI;
+      drillTip.position.y = -0.15;
+      drillAssembly.add(drillTip);
+      grpDureza.add(drillAssembly);
+
+      const workPlate = new THREE.Mesh(
+        new THREE.BoxGeometry(3.6, 0.7, 2.2),
+        steelDark,
+      );
+      workPlate.position.y = -0.9;
+      grpDureza.add(workPlate);
+
+      const sparkGeo = new THREE.BufferGeometry();
+      const sparkPositions = new Float32Array(35 * 3);
+      sparkGeo.setAttribute(
+        "position",
+        new THREE.BufferAttribute(sparkPositions, 3),
+      );
+      const sparkPoints = new THREE.Points(
+        sparkGeo,
+        new THREE.PointsMaterial({ color: 0xffb703, size: 0.14 }),
+      );
+      grpDureza.add(sparkPoints);
+      grpPropRoot.add(grpDureza);
+
+      const grpResistencia = new THREE.Group();
+      const rebar = new THREE.Group();
+      const rebarCore = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.36, 0.36, 4.6, 28),
+        steelShiny,
+      );
+      rebarCore.rotation.z = Math.PI / 2;
+      rebar.add(rebarCore);
+      for (let i = -9; i <= 9; i++) {
+        const rib = new THREE.Mesh(
+          new THREE.TorusGeometry(0.38, 0.045, 8, 24),
+          steelDark,
+        );
+        rib.rotation.y = Math.PI / 2 + 0.25;
+        rib.position.x = i * 0.22;
+        rebar.add(rib);
+      }
+      grpResistencia.add(rebar);
+      const arrowL = new THREE.Mesh(
+        new THREE.ConeGeometry(0.32, 0.65, 20),
+        orangeGlowMat,
+      );
+      arrowL.rotation.z = Math.PI / 2;
+      arrowL.position.set(-2.7, 0, 0);
+      const arrowR = new THREE.Mesh(
+        new THREE.ConeGeometry(0.32, 0.65, 20),
+        orangeGlowMat,
+      );
+      arrowR.rotation.z = -Math.PI / 2;
+      arrowR.position.set(2.7, 0, 0);
+      grpResistencia.add(arrowL, arrowR);
+      grpPropRoot.add(grpResistencia);
+
+      const grpDuctilidade = new THREE.Group();
+      const wireSegments = [];
+      for (let i = -12; i <= 12; i++) {
+        const seg = new THREE.Mesh(
+          new THREE.SphereGeometry(0.24, 20, 20),
+          blueGlowMat,
+        );
+        grpDuctilidade.add(seg);
+        wireSegments.push({ mesh: seg, idx: i });
+      }
+      grpPropRoot.add(grpDuctilidade);
+
+      const grpTenacidade = new THREE.Group();
+      const hammerPivot = new THREE.Group();
+      hammerPivot.position.set(-1.6, -0.5, 0);
+      const handle = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.11, 0.14, 2.6, 16),
+        new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.6 }),
+      );
+      handle.position.set(0, 1.2, 0);
+      const hammerHead = new THREE.Mesh(
+        new THREE.BoxGeometry(1.15, 0.65, 0.65),
+        steelShiny,
+      );
+      hammerHead.position.set(0, 2.45, 0);
+      hammerPivot.add(handle, hammerHead);
+      grpTenacidade.add(hammerPivot);
+
+      const anvil = new THREE.Mesh(
+        new THREE.BoxGeometry(2.2, 0.75, 1.4),
+        steelDark,
+      );
+      anvil.position.set(0.55, -0.85, 0);
+      grpTenacidade.add(anvil);
+
+      const shockRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.6, 0.045, 12, 40),
+        new THREE.MeshBasicMaterial({
+          color: 0x3ddc97,
+          transparent: true,
+          opacity: 0.8,
+        }),
+      );
+      shockRing.rotation.x = Math.PI / 2;
+      shockRing.position.set(0.55, -0.45, 0);
+      grpTenacidade.add(shockRing);
+      grpPropRoot.add(grpTenacidade);
+
+      const grpFragilidade = new THREE.Group();
+      const fragL = new THREE.Mesh(
+        new THREE.BoxGeometry(1.9, 0.55, 0.85),
+        steelShiny,
+      );
+      const fragR = new THREE.Mesh(
+        new THREE.BoxGeometry(1.9, 0.55, 0.85),
+        steelShiny,
+      );
+      const striker = new THREE.Mesh(
+        new THREE.ConeGeometry(0.4, 0.8, 20),
+        new THREE.MeshStandardMaterial({
+          color: 0xef4444,
+          emissive: 0x991b1b,
+          emissiveIntensity: 0.6,
+        }),
+      );
+      striker.rotation.x = Math.PI;
+      grpFragilidade.add(fragL, fragR, striker);
+      grpPropRoot.add(grpFragilidade);
+
+      function updateProp3DVisibility() {
+        grpDureza.visible = currentPropKey === "dureza";
+        grpResistencia.visible = currentPropKey === "resistencia";
+        grpDuctilidade.visible = currentPropKey === "ductilidade";
+        grpTenacidade.visible = currentPropKey === "tenacidade";
+        grpFragilidade.visible = currentPropKey === "fragilidade";
+      }
+      selectProp("dureza");
+
+      /* =========================================================
+     SLIDE 4: SIMULADOR 3D — CEMENTITA -> AUSTENITA
+     ========================================================= */
+      const cemContainer = document.getElementById("stageCem");
+      const sceneCem = new THREE.Scene();
+      const camCem = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+      camCem.position.set(4.6, 3.4, 5.4);
+      camCem.lookAt(0, 0, 0);
+
+      const rendCem = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      cemContainer.insertBefore(rendCem.domElement, cemContainer.firstChild);
+
+      sceneCem.add(new THREE.AmbientLight(0x9fb8d8, 0.75));
+      const ptCem = new THREE.PointLight(0xffffff, 1.15);
+      ptCem.position.set(6, 8, 6);
+      sceneCem.add(ptCem);
+
+      const grpCem = new THREE.Group();
+      sceneCem.add(grpCem);
+
+      const feSphere = new THREE.SphereGeometry(0.29, 32, 32);
+      const feMatCem = new THREE.MeshStandardMaterial({
+        color: 0x60a5fa,
+        metalness: 0.45,
+        roughness: 0.22,
+      });
+      const cSphere = new THREE.SphereGeometry(0.185, 32, 32);
+
+      const cemSX = 0.8,
+        cemSY = 1.4,
+        cemSZ = 1.1,
+        ausS = 1.08;
+      const cemCorners = [];
+      [-1, 1].forEach((x) =>
+        [-1, 1].forEach((y) =>
+          [-1, 1].forEach((z) => {
+            const m = new THREE.Mesh(feSphere, feMatCem);
+            m.position.set(x * cemSX, y * cemSY, z * cemSZ);
+            grpCem.add(m);
+            cemCorners.push({
+              mesh: m,
+              bx: x,
+              by: y,
+              bz: z,
+              target: new THREE.Vector3(x * cemSX, y * cemSY, z * cemSZ),
+            });
+          }),
+        ),
+      );
+
+      const faceCoords = [
+        [1, 0, 0],
+        [-1, 0, 0],
+        [0, 1, 0],
+        [0, -1, 0],
+        [0, 0, 1],
+        [0, 0, -1],
+      ];
+      const cemFaces = faceCoords.map((c, idx) => {
+        const m = new THREE.Mesh(feSphere, feMatCem);
+        let sx = c[0] * 0.5 * cemSX;
+        let sy = c[1] * 0.5 * cemSY;
+        let sz = c[2] * 0.5 * cemSZ;
+        if (c[0] === 0 && c[1] === 0) sx = idx % 2 === 0 ? 0.32 : -0.32;
+        m.position.set(sx, sy, sz);
+        grpCem.add(m);
+        return {
+          mesh: m,
+          sx,
+          sy,
+          sz,
+          ex: c[0] * ausS,
+          ey: c[1] * ausS,
+          ez: c[2] * ausS,
+          target: new THREE.Vector3(sx, sy, sz),
+        };
+      });
+
+      const cemCarbons = [];
+      [
+        [0, 0, 0],
+        [0.42, 0.72, -0.42],
+        [-0.42, -0.72, 0.42],
+        [0.5, -0.5, 0.5],
+      ].forEach((pos, idx) => {
+        const m = new THREE.Mesh(
+          cSphere,
+          new THREE.MeshStandardMaterial({
+            color: 0xef4444,
+            emissive: 0x991b1b,
+            emissiveIntensity: 0.7,
+            roughness: 0.2,
+            transparent: true,
+            opacity: 1,
+          }),
+        );
+        m.position.set(pos[0], pos[1], pos[2]);
+        grpCem.add(m);
+        cemCarbons.push({
+          mesh: m,
+          sx: pos[0],
+          sy: pos[1],
+          sz: pos[2],
+          ex: idx === 0 ? 0 : pos[0] * 4,
+          ey: idx === 0 ? 0 : pos[1] * 4,
+          ez: idx === 0 ? 0 : pos[2] * 4,
+          target: new THREE.Vector3(pos[0], pos[1], pos[2]),
+          targetOp: 1,
+          excess: idx !== 0,
+        });
+      });
+
+      const cemEdges = new THREE.EdgesGeometry(new THREE.BoxGeometry(2, 2, 2));
+      const cemLineMat = new THREE.LineBasicMaterial({ color: 0x94a3b8 });
+      const cemWire = new THREE.LineSegments(cemEdges, cemLineMat);
+      cemWire.scale.set(cemSX, cemSY, cemSZ);
+      grpCem.add(cemWire);
+      const cemBoxTarget = new THREE.Vector3(cemSX, cemSY, cemSZ);
+
+      function updateCemByTemp(T) {
+        document.getElementById("cemTempVal").innerText = T;
+        document.getElementById("cemSlider").value = T;
+        let p = 0;
+        const title = document.getElementById("cemPhaseTitle");
+        const list = document.getElementById("cemPhaseList");
+
+        if (T < 727) {
+          p = 0;
+          title.innerText = "Cementita — Fe₃C (Ortorrômbica)";
+          title.style.color = "var(--orange)";
+          list.innerHTML = `
+        <li>Estrutura <b>Ortorrômbica</b> (retangular e assimétrica).</li>
+        <li>Alta concentração de Carbono (<b>6,67% C</b>) aprisionado na rede.</li>
+        <li>Abaixo de 727 °C: sem energia térmica suficiente para dissolver.</li>`;
+          cemLineMat.color.setHex(0x94a3b8);
+        } else if (T <= 910) {
+          p = (T - 727) / (910 - 727);
+          title.innerText = "Zona Crítica (727–910 °C) — Dissolução Térmica";
+          title.style.color = "var(--amber)";
+          list.innerHTML = `
+        <li>A estrutura ortorrômbica se desfaz com o calor.</li>
+        <li>Os átomos de Ferro migram para as faces formando um <b>cubo (CFC)</b>.</li>
+        <li>O <b>excesso de Carbono escapa por difusão</b> para homogeneizar o aço!</li>`;
+          cemLineMat.color.setHex(0xfacc15);
+        } else {
+          p = 1;
+          title.innerText = "Austenita — CFC (> 910 °C)";
+          title.style.color = "var(--orange)";
+          list.innerHTML = `
+        <li><b>100% Austenitizado:</b> Cubo simétrico de Faces Centradas (CFC).</li>
+        <li>O Carbono acomoda-se no amplo interstício central sem distorcer a rede.</li>
+        <li>Aço pronto para o resfriamento (Forno, Ar ou Têmpera).</li>`;
+          cemLineMat.color.setHex(0xff7a2f);
+        }
+
+        const sx = cemSX + (ausS - cemSX) * p;
+        const sy = cemSY + (ausS - cemSY) * p;
+        const sz = cemSZ + (ausS - cemSZ) * p;
+        cemBoxTarget.set(sx, sy, sz);
+        cemCorners.forEach((c) =>
+          c.target.set(c.bx * sx, c.by * sy, c.bz * sz),
+        );
+        cemFaces.forEach((f) =>
+          f.target.set(
+            f.sx + (f.ex - f.sx) * p,
+            f.sy + (f.ey - f.sy) * p,
+            f.sz + (f.ez - f.sz) * p,
+          ),
+        );
+        cemCarbons.forEach((c) => {
+          c.target.set(
+            c.sx + (c.ex - c.sx) * p,
+            c.sy + (c.ey - c.sy) * p,
+            c.sz + (c.ez - c.sz) * p,
+          );
+          if (c.excess) c.targetOp = 1 - p;
+        });
+      }
+
+      document
+        .getElementById("cemSlider")
+        .addEventListener("input", (e) =>
+          updateCemByTemp(parseInt(e.target.value)),
+        );
+      function setCemTemp(T) {
+        updateCemByTemp(T);
+      }
+
+      /* =========================================================
+     SLIDE 5: SIMULADOR 3D — RESFRIAMENTO (CFC, CCC, TCC, REV, QP)
+     ========================================================= */
+      const crysContainer = document.getElementById("stageCrystal");
+      const sceneCrys = new THREE.Scene();
+      const camCrys = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+      camCrys.position.set(4.8, 3.5, 5.8);
+      camCrys.lookAt(0, 0, 0);
+
+      const rendCrys = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+      });
+      crysContainer.insertBefore(rendCrys.domElement, crysContainer.firstChild);
+
+      sceneCrys.add(new THREE.AmbientLight(0x9fb8d8, 0.75));
+      const ptCrys = new THREE.PointLight(0xffffff, 1.15);
+      ptCrys.position.set(6, 8, 6);
+      sceneCrys.add(ptCrys);
+
+      const grpCrys = new THREE.Group();
+      sceneCrys.add(grpCrys);
+
+      const siAlMat = new THREE.MeshStandardMaterial({
+        color: 0xc084fc,
+        emissive: 0x6b21a8,
+        emissiveIntensity: 0.55,
+        metalness: 0.4,
+        roughness: 0.2,
+      });
+
+      const crysCorners = [];
+      [-1, 1].forEach((x) =>
+        [-1, 1].forEach((y) =>
+          [-1, 1].forEach((z) => {
+            const m = new THREE.Mesh(feSphere, feMatCem.clone());
+            m.position.set(x * 1.05, y * 1.05, z * 1.05);
+            grpCrys.add(m);
+            const isTopCorner =
+              (x === 1 && y === 1 && z === 1) ||
+              (x === -1 && y === -1 && z === 1);
+            crysCorners.push({
+              mesh: m,
+              base: new THREE.Vector3(x, y, z),
+              target: new THREE.Vector3(x * 1.05, y * 1.05, z * 1.05),
+              isSubAlloy: isTopCorner,
+            });
+          }),
+        ),
+      );
+
+      const crysFaces = faceCoords.map((c) => {
+        const m = new THREE.Mesh(feSphere, feMatCem.clone());
+        m.material.transparent = true;
+        m.position.set(c[0] * 1.05, c[1] * 1.05, c[2] * 1.05);
+        grpCrys.add(m);
+        return {
+          mesh: m,
+          base: new THREE.Vector3(c[0], c[1], c[2]),
+          targetOp: 1,
+        };
+      });
+
+      const centerFe = new THREE.Mesh(
+        feSphere,
+        new THREE.MeshStandardMaterial({
+          color: 0x38bdf8,
+          metalness: 0.45,
+          roughness: 0.2,
+          transparent: true,
+          opacity: 0,
+        }),
+      );
+      grpCrys.add(centerFe);
+      let centerFeOp = 0;
+
+      const mainCarbon = new THREE.Mesh(
+        cSphere,
+        new THREE.MeshStandardMaterial({
+          color: 0xef4444,
+          emissive: 0x991b1b,
+          emissiveIntensity: 0.7,
+          roughness: 0.2,
+        }),
+      );
+      grpCrys.add(mainCarbon);
+      const mainCarbonTarget = new THREE.Vector3(0, 0, 0);
+
+      const lamellaPlateGrp = new THREE.Group();
+      const lamellaMat = new THREE.MeshStandardMaterial({
+        color: 0xfacc15,
+        emissive: 0xa16207,
+        emissiveIntensity: 0.35,
+        metalness: 0.5,
+        roughness: 0.25,
+        transparent: true,
+        opacity: 0,
+      });
+      const lamellaWall = new THREE.Mesh(
+        new THREE.BoxGeometry(0.32, 2.1, 2.1),
+        lamellaMat,
+      );
+      lamellaWall.position.set(1.75, 0, 0);
+      lamellaPlateGrp.add(lamellaWall);
+      grpCrys.add(lamellaPlateGrp);
+      let lamellaOpTarget = 0;
+
+      const precipitatesGrp = new THREE.Group();
+      const precipMat = new THREE.MeshStandardMaterial({
+        color: 0xfacc15,
+        emissive: 0xb45309,
+        emissiveIntensity: 0.5,
+        roughness: 0.25,
+        transparent: true,
+        opacity: 0,
+      });
+      const precipCMat = new THREE.MeshStandardMaterial({
+        color: 0xef4444,
+        emissive: 0x991b1b,
+        emissiveIntensity: 0.7,
+        roughness: 0.2,
+        transparent: true,
+        opacity: 0,
+      });
+      const precipCoords = [
+        [1.45, 0.75, 0.65],
+        [-1.45, -0.75, 0.65],
+        [1.35, -0.85, -0.65],
+        [-1.35, 0.85, -0.65],
+        [0.0, 1.45, -0.9],
+        [0.0, -1.45, 0.9],
+      ];
+      precipCoords.forEach((p) => {
+        const cl = new THREE.Group();
+        cl.position.set(p[0], p[1], p[2]);
+        const cBall = new THREE.Mesh(
+          new THREE.SphereGeometry(0.13, 18, 18),
+          precipCMat,
+        );
+        const fe1 = new THREE.Mesh(
+          new THREE.SphereGeometry(0.15, 18, 18),
+          precipMat,
+        );
+        fe1.position.set(0.18, 0.08, 0);
+        const fe2 = new THREE.Mesh(
+          new THREE.SphereGeometry(0.15, 18, 18),
+          precipMat,
+        );
+        fe2.position.set(-0.14, -0.12, 0.12);
+        cl.add(cBall, fe1, fe2);
+        precipitatesGrp.add(cl);
+      });
+      grpCrys.add(precipitatesGrp);
+      let precipOpTarget = 0;
+
+      const retainedAusGrp = new THREE.Group();
+      retainedAusGrp.position.set(2.05, 0, 0);
+      const retAusMat = new THREE.LineBasicMaterial({
+        color: 0x3ddc97,
+        transparent: true,
+        opacity: 0,
+      });
+      const retAusWire = new THREE.LineSegments(cemEdges, retAusMat);
+      retAusWire.scale.set(0.85, 0.85, 0.85);
+      retainedAusGrp.add(retAusWire);
+      const retFeMat = new THREE.MeshStandardMaterial({
+        color: 0x3ddc97,
+        roughness: 0.25,
+        metalness: 0.4,
+        transparent: true,
+        opacity: 0,
+      });
+      faceCoords.forEach((c) => {
+        const mf = new THREE.Mesh(
+          new THREE.SphereGeometry(0.19, 20, 20),
+          retFeMat,
+        );
+        mf.position.set(c[0] * 0.85, c[1] * 0.85, c[2] * 0.85);
+        retainedAusGrp.add(mf);
+      });
+      grpCrys.add(retainedAusGrp);
+      let retAusOpTarget = 0;
+
+      const crysLineMat = new THREE.LineBasicMaterial({ color: 0xff7a2f });
+      const crysWire = new THREE.LineSegments(cemEdges, crysLineMat);
+      crysWire.scale.set(1.05, 1.05, 1.05);
+      grpCrys.add(crysWire);
+      const crysBoxTarget = new THREE.Vector3(1.05, 1.05, 1.05);
+      let activeCrystalPhase = "CFC";
+
+      function setCrystalPhase(phase, btnEl) {
+        activeCrystalPhase = phase;
+        if (btnEl) {
+          document
+            .querySelectorAll("#phaseBtns .big-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btnEl.classList.add("active");
+        }
+        const title = document.getElementById("crysTitle");
+        const list = document.getElementById("crysList");
+        const pills = document.getElementById("crysPills");
+        const badge = document.getElementById("crys3dBadge");
+
+        lamellaOpTarget = 0;
+        precipOpTarget = 0;
+        retAusOpTarget = 0;
+        crysCorners.forEach((c) => (c.mesh.material = feMatCem));
+
+        if (phase === "CFC") {
+          crysBoxTarget.set(1.05, 1.05, 1.05);
+          crysCorners.forEach((c) =>
+            c.target.copy(c.base).multiplyScalar(1.05),
+          );
+          crysFaces.forEach((f) => (f.targetOp = 1));
+          centerFeOp = 0;
+          mainCarbonTarget.set(0, 0, 0);
+          crysLineMat.color.setHex(0xff7a2f);
+          badge.innerText = "1. AUSTENITA (CFC — CARBONO NO CENTRO AMPLO)";
+          title.innerText = "1. Austenita — Cúbica de Faces Centradas (CFC)";
+          title.style.color = "var(--orange)";
+          list.innerHTML = `
+        <li>Alta temperatura (<b>&gt; 727 °C</b>): Ferro nos 8 cantos e nas 6 faces.</li>
+        <li>O vão central é amplo: <b>Carbono (vermelho) fica no centro sem forçar a caixa</b>.</li>
+        <li>Estrutura base antes do resfriamento.</li>`;
+          pills.innerHTML = `<span class="pill info">Relação c/a: 1,000 (Cubo CFC)</span><span class="pill pro">Tensão: Baixa</span>`;
+        } else if (phase === "CCC") {
+          crysBoxTarget.set(0.86, 0.86, 0.86);
+          crysCorners.forEach((c) =>
+            c.target.copy(c.base).multiplyScalar(0.86),
+          );
+          crysFaces.forEach((f) => (f.targetOp = 0));
+          centerFeOp = 1;
+          lamellaOpTarget = 0.85;
+          mainCarbonTarget.set(1.75, 0, 0);
+          crysLineMat.color.setHex(0x38bdf8);
+          badge.innerText =
+            "2. FERRITA (CCC LIMPA) + LAMELA DE CEMENTITA AO LADO";
+          title.innerText =
+            "2. Ferrita (CCC) + Lamela de Cementita (Resfr. Lento)";
+          title.style.color = "var(--orange)";
+          list.innerHTML = `
+        <li><b>Resfriamento Lento (Recozimento / Normalização):</b> 1 Ferro vai para o centro (CCC).</li>
+        <li>Como esfria devagar, o Carbono caminha longe e forma <b>chapas/lamelas contínuas de Cementita (placa dourada ao lado = Perlita)</b>.</li>
+        <li>O cubo de Ferrita fica <b>100% limpo, macio e muito dúctil</b>!</li>`;
+          pills.innerHTML = `<span class="pill info">Matriz CCC Limpa + Lamelas</span><span class="pill pro">Alta Ductilidade</span>`;
+        } else if (phase === "TCC") {
+          crysBoxTarget.set(0.82, 1.34, 0.82);
+          crysCorners.forEach((c) =>
+            c.target.set(c.base.x * 0.82, c.base.y * 1.34, c.base.z * 0.82),
+          );
+          crysFaces.forEach((f) => (f.targetOp = 0));
+          centerFeOp = 1;
+          mainCarbonTarget.set(0.82, 0, 0.82);
+          crysLineMat.color.setHex(0xef4444);
+          badge.innerText =
+            "3. MARTENSITA (TCC ESTICADO · ALTA TENSÃO DE CUNHA!)";
+          title.innerText = "3. Martensita Fresca — Tetragonal (TCC)";
+          title.style.color = "var(--orange)";
+          list.innerHTML = `
+        <li><b>Choque Térmico (Têmpera):</b> O Ferro vai ao centro, mas <b>não dá tempo de o Carbono sair</b>!</li>
+        <li>O Carbono fica <b>cravado na aresta vertical como uma cunha</b>, esticando e tensionando a rede (veja a vibração!).</li>
+        <li>Gera <b>máxima dureza</b>, porém altíssima tensão interna e <b>fragilidade</b>!</li>`;
+          pills.innerHTML = `<span class="pill con">Relação c/a &gt; 1,03 (Esticado!)</span><span class="pill con">Tensão: Altíssima (Frágil)</span>`;
+        } else if (phase === "REV") {
+          crysBoxTarget.set(0.88, 0.88, 0.88);
+          crysCorners.forEach((c) =>
+            c.target.copy(c.base).multiplyScalar(0.88),
+          );
+          crysFaces.forEach((f) => (f.targetOp = 0));
+          centerFeOp = 1;
+          precipOpTarget = 1;
+          mainCarbonTarget.set(1.45, 0.75, 0.65);
+          crysLineMat.color.setHex(0x3ddc97);
+          badge.innerText =
+            "4. MARTENSITA REVENIDA (CUBO RELAXADO + PRECIPITADOS FINOS Fe₃C)";
+          title.innerText =
+            "4. Martensita Revenida (Por que difere da Ferrita comum?)";
+          title.style.color = "var(--orange)";
+          list.innerHTML = `
+        <li><b>Reaquecimento Moderado (Revenido):</b> O Carbono finalmente sai da aresta e <b>o cubo desincha (volta a ser CCC relaxado)</b>.</li>
+        <li><b>Diferença para a Ferrita do Recozimento:</b> Em vez de formar chapas/lamelas grossas, o Carbono forma <b>várias nanopartículas dispersas de Cementita (Fe₃C — aglomerados dourados ao redor)</b>!</li>
+        <li>Esses precipitados finos seguram boa resistência mecânica enquanto o cubo relaxado devolve <b>alta tenacidade</b>!</li>`;
+          pills.innerHTML = `<span class="pill pro">Cubo Relaxado + Nanoprecipitados Fe₃C</span><span class="pill pro">Alta Tenacidade</span>`;
+        } else if (phase === "QP") {
+          crysBoxTarget.set(0.86, 1.08, 0.86);
+          crysCorners.forEach((c) => {
+            c.target.set(c.base.x * 0.86, c.base.y * 1.08, c.base.z * 0.86);
+            if (c.isSubAlloy) c.mesh.material = siAlMat;
+          });
+          crysFaces.forEach((f) => (f.targetOp = 0));
+          centerFeOp = 1;
+          retAusOpTarget = 0.9;
+          mainCarbonTarget.set(2.05, 0, 0);
+          crysLineMat.color.setHex(0xc084fc);
+          badge.innerText =
+            "5. TÊMPERA E PARTIÇÃO (C VAI P/ AUSTENITA RETIDA + CUNHA Si/Al)";
+          title.innerText = "5. Têmpera e Partição — Q&P (Com Si ou Al)";
+          title.style.color = "var(--orange)";
+          list.innerHTML = `
+        <li><b>Bloqueio de Carbonetos:</b> O <b>Silício/Alumínio (esferas roxas)</b> impede a formação de cementita!</li>
+        <li><b>Partição do Carbono:</b> O Carbono sai da Martensita e migra para o centro da <b>Austenita Retida (cubo verde ao lado)</b>, estabilizando-a!</li>
+        <li><b>Dureza Mantida:</b> Os átomos de Si/Al substituem o Ferro e mantêm uma <b>deformação em cunha na rede</b> mesmo sem o carbono na aresta!</li>`;
+          pills.innerHTML = `<span class="pill info">C estabiliza Austenita Retida</span><span class="pill pro">Alta Tenacidade + Alta Dureza</span>`;
+        }
+      }
+
+      function attachDrag(el, grp) {
+        let drag = false,
+          px = 0,
+          py = 0;
+        el.addEventListener("pointerdown", (e) => {
+          drag = true;
+          px = e.clientX;
+          py = e.clientY;
+        });
+        window.addEventListener("pointerup", () => (drag = false));
+        window.addEventListener("pointermove", (e) => {
+          if (!drag) return;
+          grp.rotation.y += (e.clientX - px) * 0.008;
+          grp.rotation.x += (e.clientY - py) * 0.008;
+          px = e.clientX;
+          py = e.clientY;
+        });
+      }
+      attachDrag(propContainer, grpPropRoot);
+      attachDrag(cemContainer, grpCem);
+      attachDrag(crysContainer, grpCrys);
+
+      function resize3DViewports() {
+        [
+          { el: propContainer, cam: camProp, rend: rendProp },
+          { el: cemContainer, cam: camCem, rend: rendCem },
+          { el: crysContainer, cam: camCrys, rend: rendCrys },
+        ].forEach((v) => {
+          const w = v.el.clientWidth || 600;
+          const h = v.el.clientHeight || 420;
+          v.cam.aspect = w / h;
+          v.cam.updateProjectionMatrix();
+          v.rend.setSize(w, h);
+        });
+      }
+      window.addEventListener("resize", resize3DViewports);
+      setTimeout(resize3DViewports, 80);
+
+      /* Visibilidade: a cena 3D só anima quando a aba do aluno está ativa no shell.
+         (O shell dispara "seminar:activate" / "seminar:deactivate";
+          aluno-comum.js os repassa para os hooks abaixo.) */
+      let alunoVisivel = true;
+      window.alunoAtivado = function () {
+        alunoVisivel = true;
+        if (typeof resize3DViewports === "function") resize3DViewports();
+      };
+      window.alunoDesativado = function () {
+        alunoVisivel = false;
+      };
+
+      let clockT = 0;
+      function animate3D() {
+        requestAnimationFrame(animate3D);
+        if (!alunoVisivel) return;
+        clockT += 0.025;
+
+        if (currentSlide === 2) {
+          if (currentPropKey === "dureza") {
+            drillAssembly.rotation.y += 0.22;
+            const plunge = Math.sin(clockT * 2.5) * 0.25;
+            drillAssembly.position.y = -0.1 + plunge;
+            const pos = sparkGeo.attributes.position.array;
+            for (let i = 0; i < 35; i++) {
+              const a = i * 1.7 + clockT * 6;
+              const r = ((clockT * 3 + i * 0.1) % 1) * 1.4;
+              pos[i * 3] = Math.cos(a) * r;
+              pos[i * 3 + 1] = -0.5 + Math.sin(r * 3) * 0.45;
+              pos[i * 3 + 2] = Math.sin(a) * r;
+            }
+            sparkGeo.attributes.position.needsUpdate = true;
+          } else if (currentPropKey === "resistencia") {
+            rebar.rotation.x = clockT * 0.4;
+            const pulse = 1 + Math.sin(clockT * 4) * 0.025;
+            rebar.scale.set(pulse, 1, 1);
+            arrowL.position.x = -2.65 - Math.sin(clockT * 4) * 0.18;
+            arrowR.position.x = 2.65 + Math.sin(clockT * 4) * 0.18;
+          } else if (currentPropKey === "ductilidade") {
+            const bend = Math.sin(clockT * 1.8) * 0.95;
+            wireSegments.forEach((s) => {
+              const u = s.idx / 12;
+              s.mesh.position.set(
+                u * 2.2,
+                Math.cos(u * 1.4) * bend - bend * 0.4,
+                0,
+              );
+            });
+          } else if (currentPropKey === "tenacidade") {
+            const swing = Math.abs(Math.sin(clockT * 3.2));
+            hammerPivot.rotation.z = -0.88 + swing * 0.75;
+            const ringScale = 0.4 + (1 - swing) * 2.2;
+            shockRing.scale.set(ringScale, ringScale, 1);
+            shockRing.material.opacity = swing < 0.35 ? 1 - swing * 2.5 : 0.1;
+          } else if (currentPropKey === "fragilidade") {
+            const cyc = (clockT * 1.1) % 2.4;
+            if (cyc < 0.8) {
+              striker.position.set(0, 1.8 - (cyc / 0.8) * 1.35, 0);
+              fragL.position.set(-0.95, 0, 0);
+              fragL.rotation.z = 0;
+              fragR.position.set(0.95, 0, 0);
+              fragR.rotation.z = 0;
+            } else {
+              const brk = Math.min(1, (cyc - 0.8) * 2.2);
+              striker.position.set(0, 0.45, 0);
+              fragL.position.set(-0.95 - brk * 0.55, -brk * 0.7, 0);
+              fragL.rotation.z = -brk * 0.48;
+              fragR.position.set(0.95 + brk * 0.55, -brk * 0.7, 0);
+              fragR.rotation.z = brk * 0.48;
+            }
+          }
+          rendProp.render(sceneProp, camProp);
+        }
+
+        if (currentSlide === 3) {
+          grpCem.rotation.y += 0.003;
+          cemWire.scale.lerp(cemBoxTarget, 0.1);
+          cemCorners.forEach((c) => c.mesh.position.lerp(c.target, 0.1));
+          cemFaces.forEach((f) => f.mesh.position.lerp(f.target, 0.1));
+          cemCarbons.forEach((c) => {
+            c.mesh.position.lerp(c.target, 0.08);
+            c.mesh.material.opacity +=
+              (c.targetOp - c.mesh.material.opacity) * 0.1;
+            c.mesh.visible = c.mesh.material.opacity > 0.02;
+          });
+          rendCem.render(sceneCem, camCem);
+        }
+
+        if (currentSlide === 4) {
+          grpCrys.rotation.y += 0.003;
+          crysWire.scale.lerp(crysBoxTarget, 0.09);
+          const stressJitter = activeCrystalPhase === "TCC" ? 0.025 : 0;
+          crysCorners.forEach((c, i) => {
+            c.mesh.position.lerp(c.target, 0.09);
+            if (stressJitter > 0) {
+              c.mesh.position.x += Math.sin(clockT * 18 + i) * stressJitter;
+              c.mesh.position.y += Math.cos(clockT * 20 + i) * stressJitter;
+            }
+          });
+          crysFaces.forEach((f) => {
+            f.mesh.material.opacity +=
+              (f.targetOp - f.mesh.material.opacity) * 0.1;
+            f.mesh.visible = f.mesh.material.opacity > 0.02;
+          });
+          centerFe.material.opacity +=
+            (centerFeOp - centerFe.material.opacity) * 0.1;
+          centerFe.visible = centerFe.material.opacity > 0.02;
+
+          lamellaMat.opacity += (lamellaOpTarget - lamellaMat.opacity) * 0.1;
+          lamellaPlateGrp.visible = lamellaMat.opacity > 0.02;
+
+          precipMat.opacity += (precipOpTarget - precipMat.opacity) * 0.1;
+          precipCMat.opacity = precipMat.opacity;
+          precipitatesGrp.visible = precipMat.opacity > 0.02;
+          precipitatesGrp.children.forEach((cl, idx) => {
+            cl.rotation.y = clockT * 0.8 + idx;
+          });
+
+          retAusMat.opacity += (retAusOpTarget - retAusMat.opacity) * 0.1;
+          retFeMat.opacity = retAusMat.opacity * 0.75;
+          retainedAusGrp.visible = retAusMat.opacity > 0.02;
+
+          mainCarbon.position.lerp(mainCarbonTarget, 0.09);
+          rendCrys.render(sceneCrys, camCrys);
+        }
+      }
+      animate3D();
+
+      /* =========================================================
+     SLIDE 6: OS 6 TRATAMENTOS TÉRMICOS
+     ========================================================= */
+      const TREATS = {
+        recozimento: {
+          title: "1. Recozimento (Resfriamento Lento no Forno)",
+          steps: [
+            "<b>1. Aquecimento:</b> Acima da zona crítica → austenitização completa.",
+            "<b>2. Resfriamento Lento (no Forno):</b> Mais tempo para os átomos de Carbono se movimentarem.",
+            "<b>3. Microestrutura:</b> Lamelas intercaladas de cementita e ferrita <b>mais espessas (Perlita Grossa)</b>.",
+          ],
+          pros: "Aumento massivo da ductilidade e usinabilidade + relaxamento das tensões internas.",
+          cons: "Redução da dureza e menor resistência mecânica.",
+          hard: 22,
+          duct: 95,
+          tough: 78,
+          path: "M 60 200 L 150 55 L 250 55 L 470 195",
+          label: "Resfriamento Lento (Dentro do Forno) → Perlita Grossa",
+          color: "#ff7a2f",
+        },
+        normalizacao: {
+          title: "2. Normalização (Resfriamento ao Ar Livre)",
+          steps: [
+            "<b>1. Aquecimento:</b> Acima da zona crítica (austenitização).",
+            "<b>2. Resfriamento Mais Rápido (ao Ar Livre):</b> Não dá tempo para o Carbono formar lamelas grossas.",
+            "<b>3. Microestrutura:</b> Lamelas de cementita e ferrita <b>mais finas (Perlita Fina)</b> → suporta mais força sem deformar.",
+          ],
+          pros: "Aumento da resistência mecânica e da tenacidade.",
+          cons: "Redução da ductilidade em relação ao recozimento.",
+          hard: 55,
+          duct: 65,
+          tough: 82,
+          path: "M 60 200 L 150 50 L 240 50 L 365 195",
+          label: "Resfriamento Moderado (Ao Ar Livre) → Perlita Fina",
+          color: "#ff7a2f",
+        },
+        alivio: {
+          title: "3. Alívio de Tensões (Abaixo da Zona Crítica)",
+          steps: [
+            "<b>1. Aquecimento Subcrítico:</b> Abaixo da zona crítica (< 727 °C) — sem mudança de fase.",
+            "<b>2. Objetivo Atômico:</b> Apenas agitar os átomos para reorganizar a rede e aliviar tensões residuais.",
+            "<b>3. Resfriamento Muito Lento (Forno):</b> Evita que voltem a surgir tensões por choque térmico.",
+          ],
+          pros: "Garante estabilidade estrutural e dimensional, evitando trincas.",
+          cons: "Alto custo de tempo e energia + controle rigoroso de temperatura.",
+          hard: 45,
+          duct: 75,
+          tough: 85,
+          path: "M 60 200 L 150 135 L 300 135 L 470 195",
+          label: "Abaixo da Zona Crítica (< 727 °C) → Sem Mudança de Fase",
+          color: "#ff7a2f",
+        },
+        tempera: {
+          title: "4. Têmpera (Choque Térmico → Martensita TCC)",
+          steps: [
+            "<b>1. Aquecimento:</b> Acima da zona crítica (baixo/médio C) ou dentro da faixa crítica (alto C, mantendo pequena cementita dispersa p/ desgaste).",
+            "<b>2. Choque Térmico (em Líquido):</b> Bloqueia a saída do Carbono da estrutura.",
+            "<b>3. Transformação:</b> De Cúbica de Face Centrada (Austenita) para <b>Tetragonal de Corpo Centrado (Martensita)</b>.",
+          ],
+          pros: "Aço extremamente duro e de altíssima resistência mecânica.",
+          cons: "Redução drástica da ductilidade, elevada fragilidade e altas tensões internas.",
+          hard: 98,
+          duct: 10,
+          tough: 12,
+          path: "M 60 200 L 150 55 L 235 55 L 265 200 L 470 200",
+          label: "Choque Térmico Brusco (Líquido) → Martensita (TCC)",
+          color: "#ff7a2f",
+        },
+        revenido: {
+          title: "5. Revenido (Pós-Têmpera → Martensita Revenida)",
+          steps: [
+            "<b>1. Reaquecimento do Aço Temperado:</b> Abaixo da temperatura austenítica (< 727 °C).",
+            "<b>2. Alívio Atômico:</b> Permite que os carbonos aprisionados nas arestas da martensita sejam expelidos.",
+            "<b>3. Microestrutura:</b> Forma a <b>Martensita Revenida</b> (matriz de ferrita + precipitações de cementita).",
+          ],
+          pros: "Aumento representativo da tenacidade pelo relaxamento parcial da martensita.",
+          cons: "Perda inevitável de parte da dureza e resistência mecânica da têmpera.",
+          hard: 74,
+          duct: 55,
+          tough: 88,
+          path: "M 60 200 L 130 55 L 190 55 L 215 200 L 275 140 L 390 140 L 470 195",
+          label: "Têmpera + Reaquecimento Subcrítico → Martensita Revenida",
+          color: "#ff7a2f",
+        },
+        qp: {
+          title: "6. Têmpera e Partição — Q&P (Aço com Si ou Al)",
+          steps: [
+            "<b>1. Têmpera Controlada:</b> Resfriamento interrompido acima da temperatura final tradicional → preserva <b>Austenita Retida (CFC)</b>.",
+            "<b>2. Etapa de Partição (Si / Al):</b> O elemento de liga bloqueia a formação de cementita, fazendo o <b>Carbono migrar para os interstícios da Austenita Retida</b>, estabilizando-a à temperatura ambiente!",
+            "<b>3. Efeito Cunha Substitucional:</b> Átomos do elemento de liga substituem o Ferro na martensita, mantendo tensão em cunha e preservando a dureza mesmo sem o carbono na aresta!",
+          ],
+          pros: "Aumento significativo da tenacidade e ductilidade mantendo alta dureza!",
+          cons: "Elevada complexidade operacional e alto custo do processo.",
+          hard: 88,
+          duct: 72,
+          tough: 96,
+          path: "M 60 200 L 130 55 L 190 55 L 215 160 L 275 135 L 405 135 L 470 195",
+          label:
+            "Têmpera Parcial + Partição de C → Martensita + Austenita Retida",
+          color: "#ff7a2f",
+        },
+      };
+
+      function selectTreat(key, btnEl) {
+        if (btnEl) {
+          document
+            .querySelectorAll("#treatButtons .big-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btnEl.classList.add("active");
+        }
+        const d = TREATS[key];
+        document.getElementById("treatTitle").innerText = d.title;
+        document.getElementById("treatTitle").style.color = d.color;
+        document.getElementById("treatSteps").innerHTML = d.steps
+          .map(
+            (s) =>
+              `<div class="flow-step" style="border-left-color:${d.color}">${s}</div>`,
+          )
+          .join("");
+        document.getElementById("treatPros").innerText = d.pros;
+        document.getElementById("treatCons").innerText = d.cons;
+
+        document.getElementById("barHard").style.width = d.hard + "%";
+        document.getElementById("barDuct").style.width = d.duct + "%";
+        document.getElementById("barTough").style.width = d.tough + "%";
+
+        document.getElementById("treatCurveSvg").innerHTML = `
+      <svg viewBox="0 0 520 235" width="100%" height="100%">
+        <defs>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <line x1="55" y1="20" x2="55" y2="205" stroke="#475569" stroke-width="3"/>
+        <line x1="55" y1="205" x2="495" y2="205" stroke="#475569" stroke-width="3"/>
+        <text x="20" y="115" fill="#94a3b8" font-size="16" font-weight="bold" transform="rotate(-90 20,115)" text-anchor="middle">TEMPERATURA</text>
+        <text x="460" y="228" fill="#94a3b8" font-size="16" font-weight="bold" text-anchor="middle">TEMPO →</text>
+
+        <line x1="55" y1="105" x2="490" y2="105" stroke="#f87171" stroke-width="2.5" stroke-dasharray="8,6"/>
+        <text x="485" y="96" fill="#f87171" font-size="16" font-weight="bold" text-anchor="end">Zona Crítica (727 °C)</text>
+
+        <path id="thermalPath" d="${d.path}" fill="none" stroke="${d.color}" stroke-width="6" filter="url(#glow)" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle r="8" fill="#ffffff" filter="url(#glow)">
+          <animateMotion dur="4s" repeatCount="indefinite" path="${d.path}" />
+        </circle>
+
+        <text x="275" y="30" fill="${d.color}" font-size="19" font-weight="bold" text-anchor="middle">${d.label}</text>
+      </svg>
+    `;
+      }
+      selectTreat("recozimento");
+    
+    </script>
+  </body>
+</html>

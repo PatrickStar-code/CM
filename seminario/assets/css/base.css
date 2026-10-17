@@ -1,0 +1,772 @@
+      :root {
+        --bg: #070b14;
+        --glass: rgba(14, 22, 38, 0.78);
+        --glass-strong: rgba(10, 16, 29, 0.9);
+        --border: rgba(148, 163, 184, 0.22);
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --orange: #ff7a2f;
+        --orange-glow: rgba(255, 122, 47, 0.35);
+        --blue: #38bdf8;
+        --blue-glow: rgba(56, 189, 248, 0.35);
+        --green: #3ddc97;
+        --red: #f87171;
+        --yellow: #facc15;
+        --purple: #c084fc;
+        --mono: Consolas, "Courier New", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        overflow: hidden;
+        user-select: none;
+      }
+
+      /* =========================================================
+     BARRA GLOBAL SUPERIOR DOS 7 ALUNOS (#studentBar)
+     ========================================================= */
+      #studentBar {
+        position: relative;
+        z-index: 100;
+        height: 44px;
+        background: #050811;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        gap: 10px;
+      }
+      .seminar-tag {
+        font: 800 12px var(--mono);
+        color: var(--muted);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .seminar-tag span {
+        color: var(--orange);
+      }
+      .student-Selector {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+      }
+      .stu-btn {
+        background: rgba(18, 27, 46, 0.75);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        color: var(--muted);
+        padding: 5px 13px;
+        border-radius: 8px;
+        font:
+          700 13px "Segoe UI",
+          sans-serif;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .stu-btn i {
+        font: 700 11px var(--mono);
+        font-style: normal;
+        color: var(--blue);
+        opacity: 0.85;
+      }
+      .stu-btn:hover {
+        color: var(--text);
+        border-color: var(--blue);
+        background: rgba(56, 189, 248, 0.12);
+      }
+      .stu-btn.active {
+        background: linear-gradient(
+          135deg,
+          rgba(56, 189, 248, 0.25),
+          rgba(255, 122, 47, 0.18)
+        );
+        color: #fff;
+        border-color: var(--blue);
+        box-shadow: 0 0 14px rgba(56, 189, 248, 0.28);
+      }
+      .stu-btn.active i {
+        color: var(--orange);
+        opacity: 1;
+      }
+
+      /* MÓDULOS DE CADA ALUNO */
+      .student-module {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        height: calc(100vh - 44px);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .student-module.active {
+        display: flex;
+      }
+
+      /* TELA PLACEHOLDER PARA ALUNOS AINDA NÃO PREENCHIDOS */
+      .empty-student {
+        margin: auto;
+        max-width: 680px;
+        text-align: center;
+        background: var(--glass);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 48px 42px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      }
+      .empty-student .badge {
+        display: inline-block;
+        font: 800 14px var(--mono);
+        color: var(--orange);
+        background: rgba(255, 122, 47, 0.14);
+        border: 1px solid rgba(255, 122, 47, 0.4);
+        padding: 6px 16px;
+        border-radius: 20px;
+        margin-bottom: 16px;
+      }
+      .empty-student h2 {
+        font-size: 36px;
+        margin-bottom: 12px;
+      }
+      .empty-student p {
+        font-size: 20px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* FUNDO ATMOSFÉRICO ANIMADO */
+      #bgCanvas {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .vignette {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background:
+          radial-gradient(
+            80% 70% at 50% 45%,
+            transparent 45%,
+            rgba(3, 6, 12, 0.82) 100%
+          ),
+          linear-gradient(
+            180deg,
+            rgba(255, 122, 47, 0.04) 0%,
+            transparent 30%,
+            rgba(56, 189, 248, 0.04) 100%
+          );
+      }
+
+      /* SUB-HEADER DA APRESENTAÇÃO DO ALUNO */
+      .sub-header {
+        position: relative;
+        z-index: 30;
+        height: 66px;
+        background: rgba(10, 16, 28, 0.85);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 36px;
+        flex-shrink: 0;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .brand-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 122, 47, 0.25),
+          rgba(255, 122, 47, 0.05)
+        );
+        border: 1px solid rgba(255, 122, 47, 0.55);
+        box-shadow: 0 0 18px rgba(255, 122, 47, 0.25);
+        color: var(--orange);
+        display: grid;
+        place-items: center;
+        font: 800 17px var(--mono);
+      }
+      .brand-title {
+        font-size: 19px;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        color: var(--text);
+        display: block;
+      }
+      .brand-sub {
+        font: 600 11px var(--mono);
+        color: var(--muted);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .slide-nav {
+        display: flex;
+        gap: 8px;
+      }
+      .slide-tab {
+        background: rgba(20, 30, 48, 0.65);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.22s ease;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .slide-tab .num {
+        font: 700 11.5px var(--mono);
+        padding: 2px 6px;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--muted);
+      }
+      .slide-tab:hover {
+        color: var(--text);
+        border-color: rgba(255, 122, 47, 0.5);
+        transform: translateY(-1px);
+      }
+      .slide-tab.active {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 122, 47, 0.22),
+          rgba(255, 122, 47, 0.06)
+        );
+        color: var(--text);
+        border-color: var(--orange);
+        box-shadow: 0 0 22px rgba(255, 122, 47, 0.22);
+      }
+      .slide-tab.active .num {
+        background: var(--orange);
+        color: #090d16;
+      }
+
+      /* ÁREA DE SLIDES */
+      .slides-stage {
+        position: relative;
+        z-index: 10;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        padding: 22px 44px 26px;
+        display: none;
+        flex-direction: column;
+        gap: 18px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition:
+          opacity 0.32s ease,
+          transform 0.32s ease;
+      }
+      .slide.active {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* CABEÇALHO DO SLIDE */
+      .slide-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+      }
+      .kicker {
+        font: 700 11.5px var(--mono);
+        color: var(--orange);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+      }
+      .slide-header h1 {
+        font-size: clamp(28px, 2.8vw, 40px);
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      }
+      .slide-header h1 span {
+        background: linear-gradient(90deg, var(--orange), #ffb27a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .slide-subtitle {
+        font-size: clamp(17px, 1.4vw, 22px);
+        color: #cbd5e1;
+        font-weight: 600;
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid var(--border);
+        padding: 7px 16px;
+        border-radius: 12px;
+      }
+
+      /* GRIDS E CARDS GLASSMORPHISM */
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        flex: 1;
+        min-height: 0;
+      }
+      .split-3d {
+        display: grid;
+        grid-template-columns: 45% 55%;
+        gap: 24px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .card {
+        background: var(--glass);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 20px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+      .card::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.22),
+          transparent
+        );
+      }
+
+      .card-title {
+        font-size: clamp(21px, 1.8vw, 27px);
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .big-number {
+        font: 900 clamp(26px, 2.5vw, 38px) var(--mono);
+        text-shadow: 0 0 20px currentColor;
+      }
+
+      /* LISTA DE TÓPICOS DE PROJETOR */
+      .key-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+      }
+      .key-list li {
+        font-size: clamp(18.5px, 1.5vw, 22.5px);
+        line-height: 1.4;
+        color: #e2e8f0;
+        position: relative;
+        padding-left: 26px;
+        font-weight: 500;
+      }
+      .key-list li::before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: var(--orange);
+        font-weight: 900;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      /* PILLS / BADGES */
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: auto;
+      }
+      .pill {
+        font-size: clamp(15px, 1.15vw, 18.5px);
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid var(--border);
+      }
+      .pill.pro {
+        color: var(--green);
+        border-color: rgba(61, 220, 151, 0.45);
+        background: rgba(61, 220, 151, 0.1);
+      }
+      .pill.con {
+        color: var(--red);
+        border-color: rgba(248, 113, 113, 0.45);
+        background: rgba(248, 113, 113, 0.1);
+      }
+      .pill.info {
+        color: var(--blue);
+        border-color: rgba(56, 189, 248, 0.45);
+        background: rgba(56, 189, 248, 0.1);
+      }
+      .pill.warn {
+        color: var(--yellow);
+        border-color: rgba(250, 204, 21, 0.45);
+        background: rgba(250, 204, 21, 0.1);
+      }
+
+      /* NORMA AISI (SLIDE 1) */
+      .aisi-box {
+        background: var(--glass);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px 26px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 22px;
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4);
+      }
+      .aisi-code {
+        display: flex;
+        gap: 12px;
+      }
+      .aisi-digit {
+        background: rgba(7, 11, 20, 0.9);
+        border: 2px solid var(--blue);
+        border-radius: 14px;
+        padding: 12px 20px;
+        text-align: center;
+        min-width: 140px;
+        box-shadow: 0 0 24px rgba(56, 189, 248, 0.12);
+        transition: transform 0.2s;
+      }
+      .aisi-digit:hover {
+        transform: translateY(-4px) scale(1.03);
+      }
+      .aisi-digit b {
+        display: block;
+        font: 900 clamp(30px, 2.8vw, 44px) var(--mono);
+        line-height: 1.1;
+      }
+      .aisi-digit span {
+        display: block;
+        font-size: clamp(14px, 1.1vw, 17px);
+        font-weight: 700;
+        margin-top: 5px;
+        color: #cbd5e1;
+      }
+
+      /* GRADE DE ELEMENTOS QUÍMICOS (SLIDE 2) */
+      .elem-grid {
+        display: grid;
+        grid-template-columns: repeat(9, 1fr);
+        gap: 8px;
+      }
+      .elem-btn {
+        background: rgba(10, 16, 28, 0.85);
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        padding: 8px 6px;
+        color: var(--text);
+        font-size: clamp(17px, 1.35vw, 21px);
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.16s ease;
+        text-align: center;
+      }
+      .elem-btn small {
+        display: block;
+        font-size: 11.5px;
+        color: var(--muted);
+        font-weight: 600;
+        margin-top: 2px;
+      }
+      .elem-btn:hover {
+        border-color: var(--orange);
+        transform: translateY(-2px);
+      }
+      .elem-btn.active {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 122, 47, 0.28),
+          rgba(255, 122, 47, 0.08)
+        );
+        border-color: var(--orange);
+        color: var(--orange);
+        box-shadow: 0 0 18px rgba(255, 122, 47, 0.3);
+      }
+      .elem-btn.hl-elem {
+        border-color: rgba(56, 189, 248, 0.5);
+      }
+
+      /* BOTÕES DE SELEÇÃO GRANDES */
+      .big-btn-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .big-btn {
+        flex: 1;
+        min-width: 140px;
+        padding: 12px 16px;
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        color: var(--muted);
+        font-size: clamp(16.5px, 1.35vw, 20px);
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+      }
+      .big-btn:hover {
+        color: var(--text);
+        border-color: rgba(255, 122, 47, 0.55);
+        transform: translateY(-2px);
+      }
+      .big-btn.active {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 122, 47, 0.24),
+          rgba(255, 122, 47, 0.06)
+        );
+        border-color: var(--orange);
+        color: var(--text);
+        box-shadow: 0 0 24px rgba(255, 122, 47, 0.28);
+      }
+
+      /* PALCOS 3D COM ILUMINAÇÃO INDUSTRIAL */
+      .viewport-3d {
+        background: radial-gradient(
+          circle at 50% 42%,
+          #182640 0%,
+          #070b14 100%
+        );
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        min-height: 340px;
+        cursor: grab;
+        box-shadow:
+          inset 0 0 40px rgba(0, 0, 0, 0.6),
+          0 14px 36px rgba(0, 0, 0, 0.45);
+      }
+      .viewport-3d:active {
+        cursor: grabbing;
+      }
+
+      .badge-3d-top {
+        position: absolute;
+        top: 14px;
+        left: 18px;
+        background: rgba(10, 16, 28, 0.85);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(8px);
+        padding: 7px 15px;
+        border-radius: 10px;
+        font: 700 14.5px var(--mono);
+        color: var(--orange);
+        pointer-events: none;
+      }
+
+      .legend-3d {
+        position: absolute;
+        bottom: 14px;
+        left: 16px;
+        right: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(10, 16, 28, 0.88);
+        backdrop-filter: blur(8px);
+        border: 1px solid var(--border);
+        padding: 10px 16px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        pointer-events: none;
+      }
+      .dot {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        margin-right: 7px;
+        vertical-align: middle;
+      }
+
+      /* CAIXA DE EXEMPLO PRÁTICO DO DIA A DIA (SLIDE 3) */
+      .example-banner {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 122, 47, 0.16),
+          rgba(56, 189, 248, 0.08)
+        );
+        border: 2px solid var(--orange);
+        border-radius: 16px;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 0 28px rgba(255, 122, 47, 0.15);
+      }
+      .example-icon {
+        font-size: 40px;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+      .example-text b {
+        display: block;
+        font-size: 21px;
+        color: var(--orange);
+        margin-bottom: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .example-text span {
+        font-size: 20px;
+        color: #f8fafc;
+        line-height: 1.35;
+        font-weight: 600;
+      }
+
+      /* PASSOS E FLUXOS */
+      .flow-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .flow-step {
+        background: rgba(8, 13, 24, 0.85);
+        border: 1px solid var(--border);
+        border-left: 6px solid var(--blue);
+        border-radius: 0 12px 12px 0;
+        padding: 12px 18px;
+        font-size: clamp(17.5px, 1.4vw, 21px);
+        font-weight: 600;
+        line-height: 1.35;
+      }
+      .flow-step b {
+        color: var(--blue);
+      }
+
+      /* SLIDER DE TEMPERATURA */
+      .temp-control {
+        background: rgba(8, 13, 24, 0.9);
+        border: 2px solid var(--orange);
+        border-radius: 16px;
+        padding: 14px 20px;
+        box-shadow: 0 0 25px rgba(255, 122, 47, 0.15);
+      }
+      .temp-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 21px;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+      .temp-val {
+        font: 900 32px var(--mono);
+        color: var(--orange);
+        text-shadow: 0 0 16px rgba(255, 122, 47, 0.5);
+      }
+      input[type="range"].giant-slider {
+        width: 100%;
+        height: 12px;
+        accent-color: var(--orange);
+        cursor: pointer;
+      }
+
+      /* BARRAS DE PROPRIEDADES */
+      .prop-meter {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 18.5px;
+        font-weight: 700;
+      }
+      .prop-meter span {
+        width: 205px;
+        color: #cbd5e1;
+      }
+      .prop-track {
+        flex: 1;
+        height: 15px;
+        background: #070b14;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+      .prop-fill {
+        height: 100%;
+        border-radius: 8px;
+        transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow: 0 0 14px currentColor;
+      }
+    
+
+      /* =========================================================
+         PÁGINA INDIVIDUAL DE ALUNO (aberta direto OU dentro do shell)
+         O <body> de cada alunos/*.html usa class="aluno-page" e ocupa
+         a tela inteira; o layout sub-header + slides-stage + rodapé
+         continua exactamente o mesmo do modo projetor.
+         ========================================================= */
+      body.aluno-page {
+        display: flex;
+        flex-direction: column;
+      }

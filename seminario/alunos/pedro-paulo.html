@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>02 · Pedro Paulo — Subprodutos da Siderurgia & Economia Circular</title>
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <style>
+        /* ===== Estilos locais do Aluno 02 (escopados em #student-2 — sem conflito global) ===== */
+        #student-2 .pp-photo {
+          position: relative;
+          border-radius: 14px;
+          overflow: hidden;
+          border: 1px solid var(--border);
+          box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+          background: #0a1020;
+        }
+        #student-2 .pp-photo img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+        #student-2 .pp-photo figcaption {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(transparent, rgba(4, 7, 14, 0.94));
+          padding: 18px 10px 7px;
+          font:
+            700 12.5px "Segoe UI",
+            sans-serif;
+          color: #dbe4f0;
+          text-align: center;
+          letter-spacing: 0.02em;
+        }
+        #student-2 .pp-card-photo {
+          height: 150px;
+          flex-shrink: 0;
+        }
+
+        /* No CSS global, .example-text b vira título de bloco laranja — isso
+       quebrava as ênfases <b> inline dentro do texto dos banners do Aluno 02.
+       Aqui, apenas os <b> internos ao <span> voltam a ser inline normais;
+       o <b> título (filho direto) continua block/laranja como no design. */
+        #student-2 .example-text span b {
+          display: inline;
+          font-size: inherit;
+          color: inherit;
+          text-transform: none;
+          letter-spacing: normal;
+          margin: 0;
+        }
+
+        /* Rodapé de navegação mobile — existe apenas dentro do módulo do Aluno 02 */
+        #student-2 .mobile-slide-footer {
+          display: none;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 10px 16px;
+          background: rgba(8, 13, 24, 0.95);
+          border-top: 1px solid var(--border);
+          backdrop-filter: blur(12px);
+          z-index: 40;
+          flex-shrink: 0;
+        }
+        #student-2 .mob-nav-btn {
+          background: rgba(30, 41, 59, 0.85);
+          border: 1px solid var(--border);
+          color: var(--text);
+          padding: 9px 16px;
+          border-radius: 10px;
+          font:
+            700 14px "Segoe UI",
+            sans-serif;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        #student-2 .mob-nav-btn:active {
+          background: rgba(255, 122, 47, 0.25);
+          border-color: var(--orange);
+        }
+        #student-2 .mob-slide-indicator {
+          font: 800 13px var(--mono);
+          color: var(--orange);
+          letter-spacing: 0.08em;
+        }
+
+        /* Responsividade escopada ao módulo do Aluno 02 (não afeta os demais alunos) */
+        @media (max-height: 820px) and (min-width: 1181px) {
+          #student-2 .slide {
+            overflow-y: auto;
+          }
+        }
+        @media (max-width: 1180px) {
+          #student-2 .sub-header {
+            height: auto;
+            padding: 10px 18px;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+          }
+          #student-2 .slide-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+          }
+          #student-2 .slide-nav::-webkit-scrollbar {
+            display: none;
+          }
+          #student-2 .slide-tab {
+            flex-shrink: 0;
+            white-space: nowrap;
+            font-size: 14px;
+            padding: 7px 12px;
+          }
+          #student-2 .slides-stage {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+          #student-2 .slide {
+            position: relative;
+            inset: auto;
+            min-height: 100%;
+            height: auto;
+            padding: 18px 22px 28px;
+            overflow: visible;
+          }
+          #student-2 .grid-3 {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+          #student-2 .grid-2,
+          #student-2 .split-3d {
+            grid-template-columns: 1fr;
+            gap: 18px;
+            flex: none;
+          }
+          #student-2 .mobile-slide-footer {
+            display: flex;
+          }
+        }
+        @media (max-width: 768px) {
+          #student-2 .pp-card-photo {
+            height: 150px;
+          }
+          #student-2 .slide {
+            padding: 16px 14px 24px;
+          }
+          #student-2 .slide-header h1 {
+            font-size: 26px;
+          }
+          #student-2 .key-list li {
+            font-size: 17px;
+          }
+          #student-2 .card-title {
+            font-size: 19px;
+          }
+        }
+
+        /* ===== HARMONIZAÇÃO VISUAL DO ALUNO 02 ==========================
+           Paleta restrita: laranja (marca) + azul (apoio informativo) +
+           verde/vermelho apenas com função semântica (pro/con).
+           - Cards: um único acento superior laranja (fim das bordas multicoloridas)
+           - Títulos de card: neutros (a cor fica só nos números e pills)
+           - Avisos: âmbar suave no lugar do amarelo puro
+           - Roxo decorativo eliminado */
+        #student-2 {
+          --amber: #fbbf24;
+        }
+        #student-2 .card {
+          border-top: 3px solid rgba(255, 122, 47, 0.4) !important;
+        }
+        #student-2 .card-title {
+          color: var(--text) !important;
+        }
+        #student-2 .pill.warn {
+          color: var(--amber);
+          border-color: rgba(251, 191, 36, 0.42);
+          background: rgba(251, 191, 36, 0.09);
+        }
+      
+    </style>
+  </head>
+  <body id="student-2" class="aluno-page">
+    <canvas id="bgCanvas"></canvas>
+    <div class="vignette"></div>
+
+<header class="sub-header">
+        <div class="brand">
+          <div class="brand-icon">♻</div>
+          <div>
+            <span class="brand-title">CIÊNCIA DOS MATERIAIS</span>
+            <span class="brand-sub"
+              >02 Pedro Paulo · Subprodutos da Siderurgia &amp; Economia
+              Circular</span
+            >
+          </div>
+        </div>
+
+        <nav class="slide-nav" id="ppSlideNav">
+          <button class="slide-tab active" onclick="pp_goSlide(0)">
+            <span class="num">01</span>Panorama
+          </button>
+          <button class="slide-tab" onclick="pp_goSlide(1)">
+            <span class="num">02</span>Escória na Construção
+          </button>
+          <button class="slide-tab" onclick="pp_goSlide(2)">
+            <span class="num">03</span>Gás de Alto-Forno
+          </button>
+          <button class="slide-tab" onclick="pp_goSlide(3)">
+            <span class="num">04</span>Poeira &amp; Zinco
+          </button>
+          <button class="slide-tab" onclick="pp_goSlide(4)">
+            <span class="num">05</span>Lamas &amp; Aciaria
+          </button>
+          <button class="slide-tab" onclick="pp_goSlide(5)">
+            <span class="num">06</span>Síntese
+          </button>
+        </nav>
+      </header>
+
+      <div class="slides-stage">
+        <!-- SLIDE 1: PANORAMA — O QUE SÃO SUBPRODUTOS -->
+        <section class="slide active" id="pp-slide-0">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">APRESENTADOR 02 · PEDRO PAULO</div>
+              <h1>Subprodutos da <span>Siderurgia</span></h1>
+            </div>
+            <div class="slide-subtitle">
+              Escória · Gás · Poeira · Lamas:
+              <b style="color: var(--orange)">nada se perde</b>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card" style="justify-content: space-between">
+              <div>
+                <div class="card-title">
+                  ♻️ De resíduo a recurso
+                </div>
+                <ul class="key-list">
+                  <li>
+                    Junto com o ferro e o aço, a usina produz
+                    <b>escória, gás, poeiras e lamas</b>.
+                  </li>
+                  <li>
+                    São <b>300 a 400 kg</b> de subprodutos sólidos para cada
+                    tonelada de aço.
+                  </li>
+                  <li>
+                    Usinas integradas modernas
+                    <b>reaproveitam praticamente tudo</b> — o aterro é o último
+                    recurso.
+                  </li>
+                  <li>
+                    Resultado: <b>venda de materiais, energia própria</b> e
+                    menor emissão de CO₂ por tonelada.
+                  </li>
+                </ul>
+              </div>
+              <div class="pill-row">
+                <span class="pill pro">Escória → Construção</span>
+                <span class="pill info">Gás → Energia</span>
+                <span class="pill warn">Poeira → Zinco &amp; Fe</span>
+                <span class="pill">Lamas → Reciclo</span>
+              </div>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                min-height: 0;
+              "
+            >
+              <figure
+                class="pp-photo"
+                style="flex: 1 1 0; min-height: 200px; margin: 0"
+              >
+                <img
+                  src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/00b0d72fe442.jpg"
+                  alt="Usina siderúrgica integrada com alto-forno, estufas e ferrovia"
+                />
+                <figcaption>
+                  Usina integrada: alto-forno, estufas e pátios — é daqui que
+                  nascem os subprodutos
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="example-banner">
+            <div class="example-icon">💡</div>
+            <div class="example-text">
+              <b>Conceito-chave</b>
+              <span
+                >Subproduto tem <b>destino de mercado</b> (brita, cimento,
+                energia, zinco); resíduo é o que sobra sem uso. A meta da
+                siderurgia moderna é dar destino a
+                <b>100% do primeiro grupo</b> — e espremer o segundo até
+                zero.</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: ESCÓRIA — BRITA, CIMENTO E LASTRO FERROVIÁRIO -->
+        <section class="slide" id="pp-slide-1">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">TÓPICO 01 · ESCÓRIA</div>
+              <h1>Escória na <span>Construção Civil</span></h1>
+            </div>
+            <div class="slide-subtitle">
+              ≈ <b style="color: var(--orange)">250–300 kg</b> de escória por
+              tonelada de gusa
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div
+              class="card"
+            >
+              <figure class="pp-photo pp-card-photo" style="margin: 0">
+                <img
+                  src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/31ae21dea706.jpg"
+                  alt="Correias transportadoras formando pilhas de brita"
+                />
+                <figcaption>Brita: escória britada e peneirada</figcaption>
+              </figure>
+              <div class="card-title">
+                🧱 Brita de Escória
+              </div>
+              <ul class="key-list">
+                <li>
+                  Solidificada no pátio, é <b>britada e peneirada</b> como
+                  agregado.
+                </li>
+                <li>
+                  Vai para <b>base de pavimentos</b>, concretos simples e
+                  drenagem.
+                </li>
+                <li>Substitui a pedra natural e <b>preserva jazidas</b>.</li>
+              </ul>
+              <div class="pill-row">
+                <span class="pill pro">Base de estradas</span>
+                <span class="pill info">Drenagem</span>
+              </div>
+            </div>
+
+            <div
+              class="card"
+            >
+              <figure class="pp-photo pp-card-photo" style="margin: 0">
+                <img
+                  src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/5d24460128ae.jpg"
+                  alt="Saco de cimento Portland de 50 kg"
+                />
+                <figcaption>Cimento com escória granulada (CP III)</figcaption>
+              </figure>
+              <div class="card-title">
+                🪣 Cimento com Escória
+              </div>
+              <ul class="key-list">
+                <li>
+                  Granulada com água, vira <b>escória granulada de AF</b> (vidro
+                  reativo).
+                </li>
+                <li>
+                  Moída, substitui <b>parte do clínquer</b> no cimento Portland
+                  de alto-forno.
+                </li>
+                <li>
+                  Ganho duplo: <b>menos CO₂</b> na fábrica e concreto mais
+                  durável.
+                </li>
+              </ul>
+              <div class="pill-row">
+                <span class="pill info">CP III</span>
+                <span class="pill pro">Menos CO₂</span>
+              </div>
+            </div>
+
+            <div
+              class="card"
+            >
+              <figure class="pp-photo pp-card-photo" style="margin: 0">
+                <img
+                  src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/b68370bf7f30.jpeg"
+                  alt="Trilho ferroviário assentado sobre lastro de pedras"
+                />
+                <figcaption>Lastro: pedras que sustentam os trilhos</figcaption>
+              </figure>
+              <div class="card-title">
+                🚆 Lastro Ferroviário
+              </div>
+              <ul class="key-list">
+                <li>
+                  Material <b>duro e angular</b>: trava os trilhos no lugar.
+                </li>
+                <li><b>Drena a chuva</b> e absorve a vibração dos trens.</li>
+                <li>Alternativa econômica à brita de rocha natural.</li>
+              </ul>
+              <div class="pill-row">
+                <span class="pill warn">Ferrovias</span>
+                <span class="pill pro">Alta resistência</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="example-banner">
+            <div class="example-icon">🏗️</div>
+            <div class="example-text">
+              <b>Exemplo prático</b>
+              <span
+                >O cimento CP III da loja de materiais e o lastro sob os trilhos
+                do trem podem ter nascido no alto-forno: brita e escória
+                granulada têm <b>norma técnica brasileira (NBR)</b> e uso
+                certificado na construção.</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: GÁS DE ALTO-FORNO — RECUPERAÇÃO E GERAÇÃO DE ENERGIA -->
+        <section class="slide" id="pp-slide-2">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">TÓPICO 02 · GÁS DE ALTO-FORNO (BFG)</div>
+              <h1>Gás de Alto-Forno: <span>Recuperação e Energia</span></h1>
+            </div>
+            <div class="slide-subtitle">
+              ≈ <b style="color: var(--orange)">1.500 m³</b> de gás por tonelada
+              de gusa
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card" style="justify-content: space-between">
+              <div>
+                <div class="card-title">
+                  ⚡ Do topo do forno para a tomada
+                </div>
+                <ul class="key-list">
+                  <li>
+                    Gás pobre: <b>CO (~23%) e H₂</b>, com poder calorífico de
+                    ~800 kcal/Nm³.
+                  </li>
+                  <li>
+                    Captado na <b>saída de topo</b>, quente e carregado de
+                    poeira.
+                  </li>
+                  <li>
+                    Limpo nos <b>depoeirentes e lavadores</b>, vira combustível
+                    da própria usina.
+                  </li>
+                  <li>
+                    Queimado nas <b>estufas</b> (aquecem o ar soprado) e nas
+                    <b>caldeiras de co-geração</b>.
+                  </li>
+                </ul>
+              </div>
+              <div class="flow-steps">
+                <div class="flow-step">
+                  <b>1. Coleta</b> — o gás sai com a descida da carga no forno.
+                </div>
+                <div class="flow-step">
+                  <b>2. Limpeza</b> — a poeira é retida (é o próximo slide!).
+                </div>
+                <div class="flow-step">
+                  <b>3. Uso</b> — estufas, aquecimento e turbinas de geração.
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                min-height: 0;
+              "
+            >
+              <figure
+                class="pp-photo"
+                style="flex: 1 1 0; min-height: 160px; margin: 0"
+              >
+                <img
+                  src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/e80bf0a88d80.jpg"
+                  alt="Planta de limpeza de gás com depoeirentes, dutos e ciclones"
+                />
+                <figcaption>
+                  Depoeirentes e lavadores: a limpeza do gás de topo
+                </figcaption>
+              </figure>
+              <figure
+                class="pp-photo"
+                style="flex: 1 1 0; min-height: 160px; margin: 0"
+              >
+                <img
+                  src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/ea9b0a4ae97f.jpg"
+                  alt="Rotor de turbina a vapor para geração de energia elétrica"
+                />
+                <figcaption>
+                  Co-geração: o gás alimenta caldeiras e turbinas
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="example-banner">
+            <div class="example-icon">🔌</div>
+            <div class="example-text">
+              <b>Por que isso importa</b>
+              <span
+                >Sem recuperação, o CO iria para a tocha ou para a atmosfera.
+                Recuperado, o gás de alto-forno
+                <b>substitui gás natural e carvão</b> — boa parte da
+                eletricidade de uma usina integrada sai da queima dos próprios
+                gases.</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: POEIRA / PÓ DE ALTO-FORNO — RECICULAÇÃO E ZINCO -->
+        <section class="slide" id="pp-slide-3">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">TÓPICO 03 · POEIRA / PÓ DE ALTO-FORNO</div>
+              <h1>Poeira de Alto-Forno: <span>Recirculação e Zinco</span></h1>
+            </div>
+            <div class="slide-subtitle">
+              <b style="color: var(--orange)">15–40 kg</b> de poeira por
+              tonelada de gusa
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card" style="justify-content: space-between">
+              <div>
+                <div class="card-title">
+                  🌀 O que é e para onde vai
+                </div>
+                <ul class="key-list">
+                  <li>
+                    Pó fino arrastado pelo gás de topo:
+                    <b>óxidos de ferro (20–45%)</b>, carbono e cal.
+                  </li>
+                  <li>
+                    Coletada em <b>ciclones, filtros de manga e lavadores</b> de
+                    gás.
+                  </li>
+                  <li>
+                    <b>Baixa em zinco?</b> Volta para a carga via
+                    <b>sinterização</b> — a recirculação devolve Fe e C ao
+                    forno.
+                  </li>
+                  <li>
+                    <b>Rica em zinco?</b> Vai ao <b>Forno Waelz</b>, que
+                    recupera o Zn como <b>óxido de zinco</b> (Waelz oxide),
+                    vendido às zincarias.
+                  </li>
+                </ul>
+              </div>
+              <div class="flow-steps">
+                <div class="flow-step">
+                  <b>Coleta</b> → <b>Análise de Zn</b> →
+                  <b>Reciclo interno</b> ou <b>Forno Waelz</b>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                min-height: 0;
+              "
+            >
+              <figure
+                class="pp-photo"
+                style="flex: 1 1 0; min-height: 150px; margin: 0"
+              >
+                <img
+                  src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/ba0965d94671.jpg"
+                  alt="Sistema de coleta de pó com dutos e filtro de mangas"
+                />
+                <figcaption>
+                  Filtros de manga e ciclones: retenção do pó fino do gás
+                </figcaption>
+              </figure>
+              <figure
+                class="pp-photo"
+                style="flex: 1 1 0; min-height: 150px; margin: 0"
+              >
+                <img
+                  src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/50db71765730.jpg"
+                  alt="Zinco metálico recuperado a partir de pós e resíduos"
+                />
+                <figcaption>
+                  Zinco recuperado do pó volta ao mercado como matéria-prima
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div
+            class="card"
+            style="
+              flex-direction: row;
+              align-items: center;
+              gap: 18px;
+              border-left: 6px solid var(--amber);
+            "
+          >
+            <div style="font-size: 36px; flex-shrink: 0">⚠️</div>
+            <div
+              style="
+                font-size: 19px;
+                line-height: 1.4;
+                color: #f1f5f9;
+                font-weight: 600;
+              "
+            >
+              <b style="color: var(--amber)">O vilão zinco:</b> o Zn vaporiza
+              dentro do forno, condensa no topo e <b>cicla no alto-forno</b>,
+              incrustando refratários e estufas. Por isso existe um
+              <b>limite operacional de Zn na carga</b> — e o excesso precisa
+              sair pelo caminho Waelz.
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: LAMAS E RESÍDUOS DE ACIARIA -->
+        <section class="slide" id="pp-slide-4">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">
+                TÓPICO 04 · LAMAS &amp; RESÍDUOS DE ACIARIA
+              </div>
+              <h1>Lamas e Resíduos de <span>Aciaria</span></h1>
+            </div>
+            <div class="slide-subtitle">
+              Da lavagem dos gases ao pátio de escórias
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card" style="justify-content: space-between">
+              <div>
+                <div class="card-title">
+                  🚿 Lamas: o subproduto da água
+                </div>
+                <ul class="key-list">
+                  <li>
+                    Nascem na <b>lavagem úmida dos gases</b> da aciaria LD, da
+                    destartarização e do tratamento de água.
+                  </li>
+                  <li>
+                    São <b>ricas em ferro e cal</b> — material demais para jogar
+                    fora.
+                  </li>
+                  <li>
+                    Caminho: <b>espessador → filtro prensa</b> → torta sólida
+                    reciclável.
+                  </li>
+                  <li>
+                    Destino: <b>sinterização</b> (volta ao alto-forno) ou
+                    recuperação de zinco (lama de destartarização).
+                  </li>
+                </ul>
+              </div>
+              <div class="flow-steps">
+                <div class="flow-step">
+                  <b>Lava-gás</b> → <b>Espessador</b> → <b>Filtro prensa</b> →
+                  <b>Reciclo no sinter</b>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="justify-content: space-between">
+              <div>
+                <div class="card-title">
+                  🏗️ Escória de aciaria (LD)
+                </div>
+                <ul class="key-list">
+                  <li>
+                    Britada vira <b>agregado para pavimentação</b> e bases
+                    rodoviárias.
+                  </li>
+                  <li>
+                    Rica em cal, serve de <b>corretivo agrícola</b> (calagem do
+                    solo).
+                  </li>
+                  <li>
+                    O metal aprisionado é recuperado por
+                    <b>separação magnética</b> e volta ao forno.
+                  </li>
+                </ul>
+              </div>
+              <figure
+                class="pp-photo"
+                style="height: 140px; flex-shrink: 0; margin: 0"
+              >
+                <img
+                  src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/fbe5dc09a48f.jpg"
+                  alt="Escória de aciaria britada com fragmentos metálicos"
+                />
+                <figcaption>
+                  Escória de aciaria britada — fragmentos metálicos recuperáveis
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <figure
+            class="pp-photo"
+            style="height: 140px; flex-shrink: 0; margin: 0"
+          >
+            <img
+              src="https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/0b98246d8fa4.jpeg"
+              alt="Tanques circulares de sedimentação em estação de tratamento"
+            />
+            <figcaption>
+              Tanques de sedimentação: a lama assenta e a água volta limpa ao
+              processo
+            </figcaption>
+          </figure>
+        </section>
+
+        <!-- SLIDE 6: SÍNTESE — ECONOMIA CIRCULAR NA PRÁTICA -->
+        <section class="slide" id="pp-slide-5">
+          <div class="slide-header">
+            <div>
+              <div class="kicker">SÍNTESE · ECONOMIA CIRCULAR</div>
+              <h1>Siderurgia de <span>Ciclo Fechado</span></h1>
+            </div>
+            <div class="slide-subtitle">
+              Cada subproduto sai por uma
+              <b style="color: var(--orange)">porta de mercado</b>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-title">
+                <span>Escória</span>
+                <span class="big-number" style="color: var(--green)"
+                  >≈300 kg/t</span
+                >
+              </div>
+              <ul class="key-list">
+                <li>Brita, cimento CP III e lastro ferroviário.</li>
+                <li>Vendida à construção civil com norma técnica.</li>
+              </ul>
+              <div class="pill-row">
+                <span class="pill pro">Obras &amp; estradas</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                <span>Gás de AF</span>
+                <span class="big-number" style="color: var(--blue)"
+                  >1.500 m³/t</span
+                >
+              </div>
+              <ul class="key-list">
+                <li>Estufas, caldeiras e co-geração elétrica.</li>
+                <li>Energia que a usina não precisa comprar.</li>
+              </ul>
+              <div class="pill-row">
+                <span class="pill info">Co-geração</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                <span>Poeira &amp; Lamas</span>
+                <span class="big-number" style="color: var(--orange)"
+                  >Zn + Fe</span
+                >
+              </div>
+              <ul class="key-list">
+                <li>Recirculação via sinter; zinco pelo Forno Waelz.</li>
+                <li>Filtro prensa devolve a torta de lama ao processo.</li>
+              </ul>
+              <div class="pill-row">
+                <span class="pill warn">Metal de volta ao forno</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="card"
+            style="
+              justify-content: center;
+              align-items: center;
+              text-align: center;
+              gap: 10px;
+              flex: 1;
+            "
+          >
+            <div style="font-size: clamp(22px, 2vw, 30px); font-weight: 800">
+              ♻️
+              <span
+                style="
+                  background: linear-gradient(90deg, var(--orange), #ffb27a);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                "
+                >O subproduto de hoje é a matéria-prima de outro setor</span
+              >
+            </div>
+            <p
+              style="
+                font-size: clamp(17px, 1.4vw, 21px);
+                color: #cbd5e1;
+                line-height: 1.45;
+                max-width: 920px;
+              "
+            >
+              A escória vira casa, estrada e trilho; o gás vira luz na tomada; a
+              poeira e a lama voltam ao forno ou viram zinco novo. É o aço
+              <b>fechando seu próprio ciclo</b>: menos aterro, menos CO₂ e mais
+              valor por tonelada produzida.
+            </p>
+            <div
+              class="pill-row"
+              style="justify-content: center; margin-top: 4px"
+            >
+              <span class="pill pro">Menos aterro</span>
+              <span class="pill info">Energia própria</span>
+              <span class="pill warn">Recursos preservados</span>
+              <span class="pill">02 · Pedro Paulo</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- BARRA DE NAVEGAÇÃO INFERIOR PARA CELULARES E TABLETS (ALUNO 02) -->
+      <footer class="mobile-slide-footer">
+        <button class="mob-nav-btn" onclick="pp_goSlide(pp_currentSlide - 1)">
+          ← Anterior
+        </button>
+        <span class="mob-slide-indicator" id="ppMobSlideCounter"
+          >SLIDE 01 / 06</span
+        >
+        <button class="mob-nav-btn" onclick="pp_goSlide(pp_currentSlide + 1)">
+          Próximo →
+        </button>
+      </footer>
+
+    <script src="../assets/js/atmosfera.js"></script>
+    <script src="../assets/js/aluno-comum.js"></script>
+    <script>
+        /* =========================================================
+     ALUNO 02 (PEDRO PAULO) — NAVEGAÇÃO DE SLIDES ISOLADA
+     IIFE + prefixo pp_ para NÃO conflitar com o JS do Aluno 07
+     ========================================================= */
+        (function () {
+          var ppTotal = 6;
+          window.pp_currentSlide = 0;
+
+          window.pp_goSlide = function (idx) {
+            window.pp_currentSlide = (idx + ppTotal) % ppTotal;
+            var mod = document.getElementById("student-2");
+            if (!mod) return;
+            mod.querySelectorAll(".slide").forEach(function (s, i) {
+              s.classList.toggle("active", i === window.pp_currentSlide);
+            });
+            mod.querySelectorAll(".slide-tab").forEach(function (t, i) {
+              var isAct = i === window.pp_currentSlide;
+              t.classList.toggle("active", isAct);
+              if (isAct && t.scrollIntoView) {
+                t.scrollIntoView({
+                  behavior: "smooth",
+                  block: "nearest",
+                  inline: "center",
+                });
+              }
+            });
+            var stage = mod.querySelector(".slides-stage");
+            if (stage) stage.scrollTop = 0;
+            var mob = document.getElementById("ppMobSlideCounter");
+            if (mob)
+              mob.innerText =
+                "SLIDE 0" + (window.pp_currentSlide + 1) + " / 0" + ppTotal;
+          };
+
+          window.addEventListener("keydown", function (e) {
+            if (e.target && e.target.tagName === "INPUT") return;
+            if (e.key === "ArrowRight")
+              window.pp_goSlide(window.pp_currentSlide + 1);
+            if (e.key === "ArrowLeft")
+              window.pp_goSlide(window.pp_currentSlide - 1);
+          });
+        })();
+      
+    </script>
+  </body>
+</html>
