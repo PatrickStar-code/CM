@@ -3,7 +3,7 @@
    Cada aluno vive em alunos/<arquivo>.html e é carregado num
    iframe sob demanda (só baixa no primeiro clique na aba).
    ========================================================= */
-let activeStudent = 7;
+let activeStudent = 1;
 
 function activeFrame() {
   const m = document.getElementById("student-" + activeStudent);
@@ -76,4 +76,4 @@ window.addEventListener("resize", () => {
 });
 
 /* Aba inicial (07 — Gustavo) */
-switchStudent(7);
+switchStudent(1);
