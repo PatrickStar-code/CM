@@ -7,6 +7,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="../assets/css/base.css" />
     <style>
+      /* Reset universal e auto-contido para garantir renderização perfeita em qualquer dispositivo/standalone */
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #0a101c;
+        color: #f8fafc;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      #bgCanvas, .vignette {
+        display: none !important;
+      }
+
       /* =========================================================
          07 GUSTAVO — CONSOLE METALÚRGICO DE ALTA PRECISÃO
          Paleta Sóbria: #0a101c, #ff7a2f (calor), #7fb2ff (aço), #8b9cb3 (mono)
@@ -34,6 +55,13 @@
         overflow: hidden;
         margin: 0;
         padding: 0;
+      }
+
+      #student-7 .tab-short {
+        display: none;
+      }
+      #student-7 .tab-label {
+        display: inline;
       }
 
       /* Barra Superior Local do Módulo */
@@ -201,7 +229,18 @@
         opacity: 0;
         transform: translateY(6px);
         transition: opacity 0.25s ease, transform 0.25s ease;
-        overflow: hidden;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
+      }
+
+      #student-7 .slide::-webkit-scrollbar {
+        width: 6px;
+      }
+      #student-7 .slide::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 0.25);
+        border-radius: 3px;
       }
 
       #student-7 .slide.active {
@@ -576,6 +615,7 @@
         overflow: hidden;
         box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7);
         cursor: grab;
+        touch-action: none;
       }
 
       #student-7 .viewport-3d-wrap:active {
@@ -702,35 +742,409 @@
         position: relative;
         overflow: hidden;
       }
+
+      /* =========================================================
+         SISTEMA RESPONSIVO MULTI-DISPOSITIVO (PROJETOR / NOTEBOOK / TABLET / MOBILE)
+         ========================================================= */
+
+      /* 1. Telas com Altura Reduzida (Notebooks 1366x768, Projetores 720p/768p) */
+      @media (max-height: 820px) {
+        #student-7 .sub-header {
+          height: 50px;
+          padding: 0 18px;
+        }
+        #student-7 .slide {
+          padding: 10px 22px 14px;
+          gap: 10px;
+        }
+        #student-7 .slide-head {
+          padding-bottom: 6px;
+        }
+        #student-7 .slide-head h1 {
+          font-size: 22px;
+        }
+        #student-7 .kicker {
+          font-size: 9.5px;
+          margin-bottom: 0;
+        }
+        #student-7 .hud-card {
+          padding: 14px 18px;
+        }
+        #student-7 .card-title {
+          font-size: 18px;
+          margin-bottom: 4px;
+        }
+        #student-7 .card-desc {
+          font-size: 14.5px;
+          margin-bottom: 8px;
+          line-height: 1.35;
+        }
+        #student-7 .spec-list {
+          gap: 6px;
+        }
+        #student-7 .spec-list li {
+          font-size: 13.5px;
+          line-height: 1.35;
+        }
+        #student-7 .carbon-tier {
+          padding: 8px 12px;
+          margin-bottom: 6px;
+        }
+        #student-7 .tier-header span {
+          font-size: 15px;
+        }
+        #student-7 .alloy-selector {
+          margin-bottom: 8px;
+        }
+        #student-7 .alloy-btn {
+          padding: 6px 2px;
+          font-size: 12px;
+        }
+        #student-7 .aisi-breakdown {
+          margin-bottom: 8px;
+          gap: 8px;
+        }
+        #student-7 .aisi-chip {
+          padding: 8px 12px;
+        }
+        #student-7 .aisi-chip .code-val {
+          font-size: 20px;
+        }
+        #student-7 .element-grid {
+          margin-bottom: 8px;
+          gap: 4px;
+        }
+        #student-7 .danger-box,
+        #student-7 .safe-box {
+          padding: 8px 12px;
+          margin-bottom: 6px;
+        }
+        #student-7 .phase-grid {
+          margin-bottom: 8px;
+        }
+        #student-7 .phase-btn {
+          padding: 6px 2px;
+          font-size: 11px;
+        }
+        #student-7 .treat-selector {
+          margin-bottom: 8px;
+        }
+        #student-7 .treat-btn {
+          padding: 6px 2px;
+          font-size: 11.5px;
+        }
+        #student-7 .metric-bars {
+          margin-top: 8px;
+          gap: 6px;
+        }
+      }
+
+      /* 2. Telas Médias / Tablets / Janelas Redimensionadas (Largura <= 1080px) */
+      @media (max-width: 1080px) {
+        #student-7 .sub-header {
+          padding: 0 16px;
+        }
+        #student-7 .brand-meta span {
+          font-size: 9.5px;
+        }
+        #student-7 .slide-tab {
+          padding: 6px 10px;
+          font-size: 12px;
+        }
+        #student-7 .slide {
+          padding: 14px 18px 20px;
+          gap: 12px;
+        }
+        #student-7 .slide-body,
+        #student-7 .slide-body.split-40-60 {
+          display: flex;
+          flex-direction: column;
+          height: auto;
+          min-height: auto;
+          overflow: visible;
+          gap: 16px;
+        }
+        #student-7 .hud-card {
+          flex: none;
+          height: auto;
+          overflow: visible;
+        }
+        #student-7 .viewport-3d-wrap {
+          height: 420px;
+          min-height: 320px;
+          width: 100%;
+          flex: none;
+        }
+        #student-7 .curve-canvas-wrap {
+          height: 250px;
+          min-height: 220px;
+          flex: none;
+        }
+      }
+
+      /* 3. Dispositivos Móveis e Telas Estreitas (Largura <= 768px) */
+      @media (max-width: 768px) {
+        #student-7 {
+          height: 100%;
+          min-height: 100vh;
+        }
+
+        /* Cabeçalho Mobile em 2 Linhas: Linha 1 = Logo + Pager | Linha 2 = 4 Abas */
+        #student-7 .sub-header {
+          height: auto;
+          min-height: 0;
+          padding: 8px 12px 6px;
+          display: grid;
+          grid-template-columns: 1fr auto;
+          grid-template-rows: auto auto;
+          gap: 6px 8px;
+          align-items: center;
+          flex-shrink: 0;
+        }
+        #student-7 .brand-left {
+          grid-column: 1 / 2;
+          grid-row: 1 / 2;
+          gap: 8px;
+        }
+        #student-7 .brand-mk {
+          width: 28px;
+          height: 28px;
+          font-size: 13px;
+          border-radius: 6px;
+        }
+        #student-7 .brand-meta b {
+          font-size: 12.5px;
+          letter-spacing: 0.02em;
+          white-space: nowrap;
+        }
+        #student-7 .brand-meta .brand-sub {
+          display: none;
+        }
+        #student-7 .header-controls {
+          display: contents;
+        }
+        #student-7 .pager-widget {
+          grid-column: 2 / 3;
+          grid-row: 1 / 2;
+          justify-self: end;
+          padding: 2px 4px;
+          gap: 4px;
+        }
+        #student-7 .pager-btn {
+          width: 22px;
+          height: 22px;
+          font-size: 13px;
+        }
+        #student-7 .pager-num {
+          font-size: 11px;
+          min-width: 38px;
+        }
+        #student-7 .slide-nav {
+          grid-column: 1 / 3;
+          grid-row: 2 / 3;
+          width: 100%;
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 4px;
+          margin-top: 2px;
+        }
+        #student-7 .slide-tab {
+          padding: 6px 2px;
+          font-size: 11px;
+          border-radius: 6px;
+          justify-content: center;
+          text-align: center;
+          gap: 4px;
+          white-space: nowrap;
+        }
+        #student-7 .slide-tab .num {
+          font-size: 9.5px;
+          padding: 1px 3px;
+        }
+        #student-7 .tab-label {
+          display: none;
+        }
+        #student-7 .tab-short {
+          display: inline;
+        }
+
+        /* Slides em Coluna Única com Scroll Suave */
+        #student-7 .slide {
+          padding: 10px 12px 60px;
+          gap: 12px;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        #student-7 .slide-head {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
+          padding-bottom: 6px;
+        }
+        #student-7 .kicker {
+          font-size: 9px;
+          letter-spacing: 0.12em;
+        }
+        #student-7 .slide-head h1 {
+          font-size: 18px;
+        }
+        #student-7 .slide-badge {
+          font-size: 9.5px;
+          padding: 2px 6px;
+        }
+
+        #student-7 .hud-card {
+          padding: 14px 14px;
+          border-radius: 10px;
+        }
+        #student-7 .card-title {
+          font-size: 17px;
+        }
+        #student-7 .card-desc {
+          font-size: 14px;
+        }
+        #student-7 .spec-list li {
+          font-size: 13.5px;
+        }
+
+        /* Slide 01: Ligas em Linha Única Horizontal */
+        #student-7 .alloy-selector {
+          display: flex;
+          overflow-x: auto;
+          flex-wrap: nowrap;
+          gap: 6px;
+          padding-bottom: 4px;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          margin-bottom: 10px;
+        }
+        #student-7 .alloy-selector::-webkit-scrollbar {
+          display: none;
+        }
+        #student-7 .alloy-btn {
+          flex: 1 1 0;
+          white-space: nowrap;
+          min-width: 58px;
+          padding: 8px 3px;
+          font-size: 11.5px;
+        }
+        #student-7 .aisi-breakdown {
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+          margin-bottom: 10px;
+        }
+        #student-7 .aisi-chip {
+          padding: 8px 10px;
+        }
+        #student-7 .aisi-chip .code-val {
+          font-size: 20px;
+        }
+
+        /* Slide 02: Grade de Elementos em 5 Colunas Compactas */
+        #student-7 .element-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 5px;
+          margin-bottom: 10px;
+        }
+        #student-7 .elem-tile b {
+          font-size: 13.5px;
+        }
+        #student-7 .elem-tile span {
+          font-size: 7px;
+        }
+
+        /* Slide 03: Fases em Barra Deslizante Horizontal (Chips 38px) */
+        #student-7 .phase-grid {
+          display: flex;
+          overflow-x: auto;
+          flex-wrap: nowrap;
+          gap: 6px;
+          padding-bottom: 4px;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          margin-bottom: 10px;
+        }
+        #student-7 .phase-grid::-webkit-scrollbar {
+          display: none;
+        }
+        #student-7 .phase-btn {
+          flex: 0 0 auto;
+          white-space: nowrap;
+          padding: 8px 12px;
+          font-size: 11.5px;
+          border-radius: 7px;
+        }
+        #student-7 .viewport-3d-wrap {
+          height: 330px;
+          min-height: 270px;
+          touch-action: none;
+        }
+        #student-7 .viewport-hud-top,
+        #student-7 .viewport-hud-bot {
+          flex-direction: column;
+          gap: 3px;
+          align-items: flex-start;
+          left: 10px;
+          right: 10px;
+        }
+        #student-7 .hud-pill {
+          font-size: 9px;
+          padding: 2px 6px;
+        }
+
+        /* Slide 04: Tratamentos em Barra Deslizante Horizontal (Chips 38px) */
+        #student-7 .treat-selector {
+          display: flex;
+          overflow-x: auto;
+          flex-wrap: nowrap;
+          gap: 6px;
+          padding-bottom: 4px;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          margin-bottom: 10px;
+        }
+        #student-7 .treat-selector::-webkit-scrollbar {
+          display: none;
+        }
+        #student-7 .treat-btn {
+          flex: 0 0 auto;
+          white-space: nowrap;
+          padding: 8px 14px;
+          font-size: 12px;
+          border-radius: 7px;
+        }
+        #student-7 .curve-canvas-wrap {
+          height: 220px;
+          min-height: 200px;
+        }
+      }
     </style>
   </head>
   <body id="student-7" class="aluno-page">
-    <canvas id="bgCanvas"></canvas>
-    <div class="vignette"></div>
-
     <!-- CABEÇALHO SUPERIOR FIXO -->
     <header class="sub-header">
       <div class="brand-left">
         <div class="brand-mk">Fe</div>
         <div class="brand-meta">
           <b>Metalurgia Física &amp; Tratamentos Térmicos</b>
-          <span>07 Gustavo · Fechamento do Grupo 3 · A Ciência das Aplicações</span>
+          <span class="brand-sub">07 Gustavo · Fechamento do Grupo 3 · A Ciência das Aplicações</span>
         </div>
       </div>
 
       <div class="header-controls">
         <nav class="slide-nav">
           <button class="slide-tab active" onclick="goSlide(0)">
-            <span class="num">01</span>Classificação &amp; AISI
+            <span class="num">01</span><span class="tab-label">Classificação &amp; AISI</span><span class="tab-short">AISI</span>
           </button>
           <button class="slide-tab" onclick="goSlide(1)">
-            <span class="num">02</span>Química &amp; Solutos
+            <span class="num">02</span><span class="tab-label">Química &amp; Solutos</span><span class="tab-short">Química</span>
           </button>
           <button class="slide-tab" onclick="goSlide(2); setPhase3D('CFC')">
-            <span class="num">03</span>Redes Cristalinas 3D
+            <span class="num">03</span><span class="tab-label">Redes Cristalinas 3D</span><span class="tab-short">Redes 3D</span>
           </button>
           <button class="slide-tab" onclick="goSlide(3); selectTreatment('recozimento')">
-            <span class="num">04</span>Tratamentos Industriais
+            <span class="num">04</span><span class="tab-label">Tratamentos Industriais</span><span class="tab-short">Tratamentos</span>
           </button>
         </nav>
 
@@ -1653,13 +2067,21 @@
       animate3D();
 
       function resize3D() {
-        const w = container3D.clientWidth || 600;
-        const h = container3D.clientHeight || 500;
+        if (!container3D) return;
+        const w = container3D.clientWidth;
+        const h = container3D.clientHeight;
+        if (!w || !h) return;
         camera3D.aspect = w / h;
         camera3D.updateProjectionMatrix();
         renderer3D.setSize(w, h);
       }
       window.addEventListener("resize", resize3D);
+      if (window.ResizeObserver && container3D) {
+        const ro = new ResizeObserver(() => {
+          resize3D();
+        });
+        ro.observe(container3D);
+      }
       setTimeout(resize3D, 80);
 
       /* =========================================================
