@@ -3,23 +3,379 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>03 · Ilca — Aguardando conteúdo</title>
+    <title>03 · Ilca — Linha do Tempo da Poluição Industrial</title>
     <link rel="stylesheet" href="../assets/css/base.css" />
+    <style>
+      /* ===== Estilos locais do Aluno 03 (escopados em #student-3) ===== */
+      #student-3 { --amber: #fbbf24; }
+      #student-3 .card { border-top: 3px solid rgba(255, 122, 47, 0.4) !important; }
+      #student-3 .card-title { color: var(--text) !important; }
+      #student-3 .pill.warn { color: var(--amber); border-color: rgba(251,191,36,.42); background: rgba(251,191,36,.09); }
+      #student-3 .example-text span b { display: inline; font-size: inherit; color: inherit; text-transform: none; letter-spacing: normal; margin: 0; }
+
+      /* ---- Linha do tempo horizontal ---- */
+      #student-3 .il-rail { position: relative; flex-shrink: 0; overflow-x: auto; scrollbar-width: none; padding: 2px 0 4px; }
+      #student-3 .il-rail::-webkit-scrollbar { display: none; }
+      #student-3 .il-track { position: relative; display: grid; grid-template-columns: repeat(7, minmax(124px, 1fr)); }
+      #student-3 .il-line { position: absolute; top: 19px; left: calc(100% / 14); right: calc(100% / 14); height: 4px; border-radius: 2px; background: rgba(148,163,184,.25); }
+      #student-3 .il-fill { height: 100%; width: 0; border-radius: 2px; background: var(--orange); box-shadow: 0 0 12px var(--orange-glow); transition: width .5s cubic-bezier(.22,1,.36,1); }
+      #student-3 .il-node { position: relative; background: none; border: 0; color: var(--muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0 4px; font-family: inherit; }
+      #student-3 .il-dot { width: 20px; height: 20px; margin-top: 9px; border-radius: 50%; background: var(--bg); border: 3px solid #64748b; position: relative; z-index: 1; transition: transform .25s, background .25s, border-color .25s, box-shadow .25s; }
+      #student-3 .il-node b { font: 800 clamp(14px, 1.2vw, 17px) var(--mono); margin-top: 6px; transition: color .2s; }
+      #student-3 .il-node small { font-size: clamp(12px, .95vw, 14px); font-weight: 600; text-align: center; line-height: 1.2; }
+      #student-3 .il-node:hover .il-dot { border-color: var(--orange); transform: scale(1.2); }
+      #student-3 .il-node:hover b { color: var(--text); }
+      #student-3 .il-node.done .il-dot { border-color: var(--orange); }
+      #student-3 .il-node.active .il-dot { background: var(--orange); border-color: var(--orange); transform: scale(1.4); box-shadow: 0 0 0 6px var(--orange-glow); }
+      #student-3 .il-node.active b { color: var(--orange); }
+      #student-3 .il-node.active small { color: var(--text); }
+      #student-3 .il-node:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; border-radius: 10px; }
+
+      /* ---- Detalhe ---- */
+      #student-3 .il-detail { animation: none; }
+      #student-3 .il-detail.in-r { animation: il-r .38s cubic-bezier(.22,1,.36,1); }
+      #student-3 .il-detail.in-l { animation: il-l .38s cubic-bezier(.22,1,.36,1); }
+      @keyframes il-r { from { opacity: 0; transform: translateX(46px); } to { opacity: 1; transform: none; } }
+      @keyframes il-l { from { opacity: 0; transform: translateX(-46px); } to { opacity: 1; transform: none; } }
+
+      #student-3 .il-side { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 14px; }
+      #student-3 .il-car { position: relative; height: 100%; min-height: 260px; margin: 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); background: #0a1020; box-shadow: 0 10px 26px rgba(0,0,0,.45); }
+      #student-3 .il-slides { display: flex; height: 100%; transition: transform .5s cubic-bezier(.22,1,.36,1); }
+      #student-3 .il-sl { min-width: 100%; height: 100%; position: relative; }
+      #student-3 .il-sl svg, #student-3 .il-sl img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #student-3 .il-source { width: 100%; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 18px; padding: 42px; color: var(--text); text-decoration: none; background: radial-gradient(circle at 80% 20%, rgba(255,122,47,.22), transparent 38%), linear-gradient(135deg, #17243a, #0a1020); }
+      #student-3 .il-source strong { font: 800 clamp(20px, 2vw, 32px) "Segoe UI", sans-serif; color: var(--orange); }
+      #student-3 .il-source span { font: 600 clamp(15px, 1.2vw, 19px) "Segoe UI", sans-serif; color: var(--text); line-height: 1.45; }
+      #student-3 .il-source:hover strong { color: #ffb07a; }
+      #student-3 .il-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 16px 12px; font: 700 clamp(13px, 1vw, 15.5px) "Segoe UI", sans-serif; color: #dbe4f0; background: linear-gradient(transparent, rgba(4,7,14,.94)); }
+      #student-3 .il-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: rgba(10,16,28,.8); color: var(--text); font-size: 20px; cursor: pointer; backdrop-filter: blur(6px); transition: all .2s; }
+      #student-3 .il-nav:hover { border-color: var(--orange); background: rgba(255,122,47,.3); }
+      #student-3 .il-nav.p { left: 10px; } #student-3 .il-nav.n { right: 10px; }
+      #student-3 .il-dots { position: absolute; top: 12px; right: 14px; display: flex; gap: 6px; }
+      #student-3 .il-dots button { width: 22px; height: 6px; border-radius: 3px; border: 0; background: rgba(255,255,255,.35); cursor: pointer; transition: all .25s; padding: 0; }
+      #student-3 .il-dots button.on { background: var(--orange); width: 34px; }
+      #student-3 .il-auto { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--orange); width: 0; }
+
+      #student-3 .il-card { min-height: 0; overflow-y: auto; }
+      #student-3 .il-side .il-card { flex: 1 1 auto; }
+      #student-3 .il-side .example-banner { flex-shrink: 0; }
+      #student-3 .il-card .key-list li { font-size: clamp(16.5px, 1.3vw, 20px); }
+      #student-3 .il-w { background: rgba(8,13,24,.9); border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+      #student-3 .il-w h4 { font: 700 12px var(--mono); color: var(--blue); letter-spacing: .12em; text-transform: uppercase; }
+      #student-3 .il-big { font: 900 clamp(26px, 2.4vw, 36px) var(--mono); color: var(--orange); line-height: 1; }
+      #student-3 .il-out { font-size: clamp(15px, 1.15vw, 18px); font-weight: 600; color: #e2e8f0; line-height: 1.4; min-height: 2.8em; }
+      #student-3 .il-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+      #student-3 .il-ph-bar { height: 10px; border-radius: 6px; background: linear-gradient(90deg, #f87171, #fbbf24 55%, #3ddc97); position: relative; }
+      #student-3 .il-ph-bar i { position: absolute; top: -4px; width: 4px; height: 18px; background: #fff; border-radius: 2px; transition: left .15s; }
+      #student-3 .il-bar { height: 12px; border-radius: 7px; background: #070b14; border: 1px solid var(--border); overflow: hidden; }
+      #student-3 .il-bar i { display: block; height: 100%; width: 0; border-radius: 7px; background: var(--orange); transition: width 1.2s cubic-bezier(.22,1,.36,1); }
+      #student-3 .il-meter { display: grid; grid-template-columns: 112px 1fr 60px; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: #cbd5e1; }
+      #student-3 .il-meter i { display: block; height: 100%; border-radius: 7px; background: var(--green); transition: width .9s ease, background .4s; }
+      #student-3 .il-meter em { font: 800 14px var(--mono); font-style: normal; text-align: right; }
+      #student-3 .il-btns { display: flex; gap: 8px; }
+      #student-3 .il-btns .big-btn { min-width: 0; padding: 8px 12px; font-size: 16px; }
+      #student-3 .il-note { font: 600 11.5px var(--mono); color: var(--muted); }
+      #student-3 .il-hint { font: 600 12px var(--mono); color: var(--muted); text-align: center; }
+
+      /* ---- Responsivo (escopado) ---- */
+      #student-3 .mobile-slide-footer { display: none; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; background: rgba(8,13,24,.95); border-top: 1px solid var(--border); backdrop-filter: blur(12px); z-index: 40; flex-shrink: 0; }
+      #student-3 .mob-nav-btn { background: rgba(30,41,59,.85); border: 1px solid var(--border); color: var(--text); padding: 9px 16px; border-radius: 10px; font: 700 14px "Segoe UI", sans-serif; cursor: pointer; }
+      #student-3 .mob-nav-btn:active { background: rgba(255,122,47,.25); border-color: var(--orange); }
+      #student-3 .mob-slide-indicator { font: 800 13px var(--mono); color: var(--orange); letter-spacing: .08em; }
+      @media (max-height: 880px) and (min-width: 1181px) { #student-3 .slide { overflow-y: auto; } #student-3 .il-detail { min-height: 430px; } }
+      @media (max-width: 1180px) {
+        #student-3 .slides-stage { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        #student-3 .slide { position: relative; inset: auto; min-height: 100%; height: auto; padding: 18px 22px 28px; overflow: visible; }
+        #student-3 .grid-2 { grid-template-columns: 1fr; gap: 18px; flex: none; }
+        #student-3 .il-car { height: auto; min-height: 230px; }
+        #student-3 .il-side { gap: 18px; }
+        #student-3 .slide-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+        #student-3 .mobile-slide-footer { display: flex; }
+      }
+      @media (max-width: 768px) {
+        #student-3 .slide { padding: 16px 14px 24px; }
+        #student-3 .slide-header h1 { font-size: 26px; }
+        #student-3 .il-meter { grid-template-columns: 92px 1fr 52px; }
+      }
+      @media (prefers-reduced-motion: reduce) { #student-3 .il-detail.in-r, #student-3 .il-detail.in-l { animation: none; } #student-3 .il-slides, #student-3 .il-fill { transition: none; } }
+    </style>
   </head>
-  <body class="aluno-page">
+  <body id="student-3" class="aluno-page">
     <canvas id="bgCanvas"></canvas>
     <div class="vignette"></div>
 
-    <div class="empty-student">
-      <span class="badge">APRESENTADOR 03</span>
-      <h2>03 · Ilca</h2>
-      <p>
-        Espaço reservado para os slides de <b>Ilca</b>.<br />
-        Leia o <code>README.md</code> na raiz do projeto: o passo a passo para
-        montar sua apresentação está em <code>alunos/ilca.html</code>.
-      </p>
+    <div class="slides-stage">
+      <section class="slide active" id="il-slide-0">
+        <div class="slide-header">
+          <div>
+            <div class="kicker" id="ilKicker">APRESENTADORA 03 · ILCA</div>
+            <h1 id="ilTitle"></h1>
+          </div>
+        </div>
+
+        <div class="il-rail" id="ilRail">
+          <div class="il-track" id="ilTrack">
+            <div class="il-line"><div class="il-fill" id="ilFill"></div></div>
+          </div>
+        </div>
+
+        <div class="grid-2 il-detail" id="ilDetail">
+          <figure class="il-car" id="ilCar">
+            <div class="il-slides" id="ilSlides"></div>
+            <button class="il-nav p" id="ilPrev" aria-label="Imagem anterior">‹</button>
+            <button class="il-nav n" id="ilNext" aria-label="Próxima imagem">›</button>
+            <div class="il-dots" id="ilDots"></div>
+            <div class="il-auto" id="ilAuto"></div>
+          </figure>
+          <div class="il-side">
+            <div class="card il-card" id="ilCard"></div>
+            <div class="example-banner" id="ilBanner">
+              <div class="example-icon" id="ilBIcon"></div>
+              <div class="example-text"><b id="ilBTitle"></b><span id="ilBText"></span></div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
 
+    <footer class="mobile-slide-footer">
+      <button class="mob-nav-btn" onclick="il_go(il_cur - 1)">← Anterior</button>
+      <span class="mob-slide-indicator" id="ilMobCount">PERÍODO 01 / 07</span>
+      <button class="mob-nav-btn" onclick="il_go(il_cur + 1)">Próximo →</button>
+    </footer>
+
     <script src="../assets/js/atmosfera.js"></script>
+    <script src="../assets/js/aluno-comum.js"></script>
+    <script>
+      /* =========================================================
+         ALUNO 03 (ILCA) — LINHA DO TEMPO HORIZONTAL INTERATIVA
+         IIFE + prefixo il_ para NÃO conflitar com os demais alunos.
+         Para usar fotos reais, troque o item do carrossel por:
+           { img: "../caminho/foto.jpg", cap: "Legenda" }
+         ========================================================= */
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+        var T = function (x, y, t, sz, c) { return '<text x="' + x + '" y="' + y + '" font-family="Segoe UI,Arial,sans-serif" font-size="' + (sz || 16) + '" font-weight="800" fill="' + (c || "#fff") + '" text-anchor="middle">' + t + "</text>"; };
+        function fac(x, h) { h = h || 50; return '<rect x="' + x + '" y="' + (150 - h) + '" width="46" height="' + h + '" fill="#2b2f36"/><rect x="' + (x + 30) + '" y="' + (150 - h - 34) + '" width="10" height="34" fill="#3a3f48"/><rect x="' + (x + 6) + '" y="' + (150 - h + 10) + '" width="8" height="8" fill="#e0b050" opacity=".8"/><rect x="' + (x + 20) + '" y="' + (150 - h + 10) + '" width="8" height="8" fill="#e0b050" opacity=".8"/>'; }
+        function smoke(x, y, c) { var s = ""; for (var i = 0; i < 4; i++) s += '<circle cx="' + (x + i * 9) + '" cy="' + (y - i * 16) + '" r="' + (9 + i * 5) + '" fill="' + (c || "#555") + '" opacity="' + (0.75 - i * 0.12) + '"/>'; return s; }
+        function scene(o) {
+          var s = '<svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img"><defs><linearGradient id="ilg' + o.id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + o.sky[0] + '"/><stop offset="1" stop-color="' + o.sky[1] + '"/></linearGradient></defs><rect width="400" height="220" fill="url(#ilg' + o.id + ')"/>';
+          var i, x, y;
+          if (o.fac) o.fac.forEach(function (f) { s += fac(f[0], f[1]); });
+          if (o.fac && o.smoke) o.fac.forEach(function (f) { s += smoke(f[0] + 32, 150 - (f[1] || 50) - 34, o.smoke); });
+          if (o.ground) s += '<rect y="150" width="400" height="70" fill="' + o.ground + '"/>';
+          if (o.river) s += '<path d="M0 175 Q60 160 120 175 T240 175 T400 170 V220 H0Z" fill="' + o.river + '"/><path d="M0 195 Q70 183 140 195 T280 195 T400 192" stroke="#fff" stroke-opacity=".18" fill="none" stroke-width="2"/>';
+          if (o.pipe) s += '<rect x="150" y="150" width="70" height="12" fill="#444"/><path d="M220 156 q22 10 30 40" stroke="' + o.pipe + '" stroke-width="9" fill="none" opacity=".85"/>';
+          if (o.rain) for (i = 0; i < 34; i++) { x = (i * 37) % 400; y = (i * 53) % 200; s += '<line x1="' + x + '" y1="' + y + '" x2="' + (x - 5) + '" y2="' + (y + 14) + '" stroke="#b5d96a" stroke-width="1.6" opacity=".8"/>'; }
+          if (o.trees) for (i = 0; i < 7; i++) { x = 20 + i * 55; var d = (i % 2) * 10; s += '<rect x="' + x + '" y="' + (120 + d) + '" width="4" height="40" fill="#4a3a2a"/><path d="M' + (x + 2) + " " + (125 + d) + " l-12 -10 M" + (x + 2) + " " + (135 + d) + " l12 -12 M" + (x + 2) + " " + (130 + d) + ' l-9 -4" stroke="#4a3a2a" stroke-width="2.5" fill="none"/>'; }
+          if (o.haze) s += '<rect width="400" height="220" fill="' + o.haze + '" opacity=".5"/>';
+          if (o.extra) s += o.extra;
+          return s + "</svg>";
+        }
+
+        var EV = [
+          { year: "Entre 1700 e 1800", tab: "Primeiras fábricas", sub: "Nascem as fábricas e os rios viram esgoto",
+            slides: [
+              { img: "https://commons.wikimedia.org/wiki/Special:FilePath/McConnel_%26_Company_mills%2C_about_1820.jpg", cap: "Moinhos da McConnel & Company, por volta de 1820" },
+              { img: "https://i.respekt.cz/fotoarchiv.respekt.cz/migrations/2025/04/08/eba0fa/2020/07/27-uhli01-profimedia_1r7l7.jpg?width=1080", cap: "As fábricas de cobre do Sr. Vivian, em Swansea, retratadas pelo pintor francês Jean-Baptiste Henri Durand-Brager: chaminés, fumaça e águas industriais em uma paisagem marcada pela expansão fabril." },
+              ],
+            bullets: ["<b>Antes de 1700</b>, a poluição já existia em oficinas e minas, mas ficava restrita ao redor das grandes cidades.","A <b>Revolução Industrial</b> trouxe forjas, carvão, vapor e metalurgia em grande escala.", "Fábricas nasciam junto aos rios e a água para o processo era descartada sem regulamentação.", "<b>Escória, cinzas e químicos</b> iam direto ao solo e ao ar, sem tratamento."],
+            pills: [["con", "Rio = esgoto"], ["warn", "Sem regulação"], ["info", "Carvão + vapor"]],
+            banner: ["🏭", "Como era o descarte", "Subproduto era visto como <b>custo a evitar</b>, o que sobrava era jogado no rio ou empilhado em aterros que eram custeados pela fábrica."] },
+
+            { year: "1852", tab: "Chuva ácida", sub: "A primeira chuva ácida identificada",
+            slides: [
+              { img: "https://commons.wikimedia.org/wiki/Special:FilePath/Origins_of_acid_rain.svg", cap: "A chuva ácida se forma quando dióxido de enxofre e óxidos de nitrogênio, liberados pela queima de combustíveis, reagem com a umidade da atmosfera e retornam ao solo com a precipitação." },
+              { img: "https://commons.wikimedia.org/wiki/Special:FilePath/Acid_rain_woods1.JPG", cap: "Floresta afetada pela chuva ácida nas montanhas Jizera, na República Tcheca: a acidificação do solo danifica as árvores, reduz nutrientes e ameaça a biodiversidade." },
+              { img: "https://commons.wikimedia.org/wiki/Special:FilePath/Pollution_-_Damaged_by_acid_rain.jpg", cap: "Estátua danificada pela chuva ácida: os compostos ácidos corroem a pedra, desgastam detalhes e aceleram a deterioração de monumentos." }],
+            bullets: ["Em Manchester, na Inglaterra, Foi identificada a primeira chuva ácida (1852).", "<b>dióxido de enxofre (SO₂) e óxidos de nitrogênio (NOₓ)</b> das chaminés reagem com a água que formam a chuva e viram ácidos.", "<b>Alcance do impacto:</b> carregados pelos ventos, esses poluentes podem causar danos a dezenas ou centenas de quilômetros da fonte, atingindo florestas, lagos, solos e monumentos.", "<b>Na pele:</b> em geral diluída, mas pode irritar pele sensível, olhos e vias respiratórias.", "<b>Na natureza:</b> acidifica rios, mata peixes, queima folhas, retira nutrientes do solo e corrói pedra e metal."],
+            pills: [],
+            banner: [] },
+
+            { year: "1948", tab: "Smog de Donora", sub: "Smog de Donora (EUA)", widget: "donora",
+            slides: [
+              { img: "https://commons.wikimedia.org/wiki/Special:FilePath/The_wire_mill%2C_Donora%2C_PA._LCCN2002713075.jpg", cap: "A usina de fios de Donora, parte do complexo industrial que contribuiu para a concentração de poluentes no vale durante o episódio de 1948." },
+              { img: "https://commons.wikimedia.org/wiki/Special:FilePath/Donora%2C_Washington_County%2C_Pennsylvania%2C_1901_LOC_2002620680.jpg", cap: "Vista histórica de Donora e do vale do Monongahela: a geografia encaixada favoreceu a retenção da fumaça quando ocorreu a inversão térmica." },
+              { img: "https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3Ntb2ctZG9ub3JhLmpwZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6ODI4fSwidG9Gb3JtYXQiOiJhdmlmIn19", cap: "Imagem do smog de Donora: a névoa escura sobre a cidade evidencia como a inversão térmica reteve a poluição industrial no vale." },
+              { link: "https://www.nationalgeographic.com/history/article/decades-ago-donora-smog-disaster-exposed-perils-dirty-air", title: "National Geographic", cap: "Artigo sobre o desastre do smog de Donora e os perigos da poluição atmosférica industrial." }],
+            bullets: ["Em <b>outubro de 1948</b> na cidade de Donora , no estado da Pensilvânia, Estados Unidos. O ar parado prendeu no vale a fumaça de uma <b>siderúrgica e de uma fábrica de zinco</b>.", "Com uma população de 14mil habitantes. Quem vivia <b>ao redor das fábricas</b> respirou gases tóxicos: tosse, falta de ar, náuseas. Oque causou impacto a quase metade da população", "Foi o <b>pontapé</b> para o mundo começar a pensar no meio ambiente."],
+            pills: [],
+            banner: ["⚠️", "Marco histórico", "Donora abriu o debate sobre <b>qualidade do ar</b>: pela primeira vez, a poluição industrial foi tratada como risco público."] },
+          { year: "1970", tab: "Águas de resfriamento", sub: "Águas de resfriamento dos altos-fornos",
+            slides: [
+              { img: "https://cptstatic.s3.amazonaws.com/imagens/enviadas/materias/materia33258/lencois-e-nascentes-como-a-agua-se-forma-e-se-move-no-solo-cpt-1.jpg", cap: "Lençóis freáticos: a água se infiltra no solo, forma reservas subterrâneas e pode transportar contaminantes até nascentes e poços." }],
+            bullets: ["Altos-fornos usam <b>enormes volumes de água</b> para resfriar equipamentos.", "A água descartada pode carregar <b>cromo e níquel</b>: o cromo hexavalente (Cr VI) é tóxico e cancerígeno, enquanto o níquel pode causar alergias e afetar organismos aquáticos.", "Esses metais podem se infiltrar no solo, alcançar os <b>lençóis freáticos</b> e permanecer no ambiente por longos períodos."],
+            pills: [["con", "Cromo (Cr)"], ["con", "Níquel (Ni)"], ["warn", "Água subterrânea"]],
+            banner: ["💧", "Poluição invisível", "Diferente da fumaça, o metal na água <b>não se vê</b>: contaminava o lençol freático por anos antes de alguém perceber."] },
+          { year: "1990", tab: "Engenharia ambiental", sub: "As primeiras soluções chegam",
+            slides: [
+            { img: "https://commons.wikimedia.org/wiki/Special:FilePath/EXHIBIT_OF_POLLUTION_CONTROL_SYSTEM._AT_FOUR_CORNERS_POWER_PLANT_-_NARA_-_544097.jpg", cap: "Sistema de controle de poluição em uma usina: equipamentos de tratamento passaram a reduzir a emissão de partículas e gases industriais." },
+            { img: "../assets/img/ibere-reator-manual-do-mundo.png", cap: "Visita do Iberê, do Manual do Mundo, a um reator nuclear: o vídeo explica como a água circula, resfria o sistema e passa por etapas de controle e filtragem." }],
+            bullets: ["Cada <b>tonelada de aço</b> gera <b>400 a 700 kg</b> de resíduos sólidos, além dos gases.", "<b>Granulação:</b> escória líquida resfriada rápido com água vira <b>areia vítrea</b> cimentícia.", "<b>Recuperação e lavagem de gases</b> antes de chegarem à atmosfera.", "<b>Vídeo:</b> <a href=\"https://www.youtube.com/watch?v=ZsR-2zkEwCM&amp;t=62s\" target=\"_blank\" rel=\"noopener noreferrer\">Iberê explica o resfriamento e a filtragem da água em um reator nuclear.</a>"],
+            pills: [["pro", "Escória → cimento"], ["info", "Gases lavados"], ["pro", "Sem aterro"]],
+            banner: ["💰", "Economia gigantesca", "A escória virou matéria-prima para cimento e as indústrias <b>deixaram de gastar com aterros</b>: proteger o ambiente passou a dar lucro."] },
+          { year: "2010", tab: "Sensores e leis", sub: "Sensores, leis e monitoramento contínuo", widget: "sensores",
+            slides: [
+            { img: "https://commons.wikimedia.org/wiki/Special:FilePath/483897main_Global-PM2.5-map.JPG", cap: "Mapa global de partículas finas (PM2,5), elaborado com dados de 2001 a 2006 e publicado pela NASA: sensores e satélites permitem acompanhar a poluição em escala planetária." },
+              { img: "https://www.econebra.com.br/imagens/informacoes/filtro-material-particulado-01.jpg", cap: "Filtro de material particulado usado no controle de emissões industriais, reduzindo poeira e partículas lançadas na atmosfera." }],
+            bullets: ["As resoluções do <b>CONAMA</b> fixam limites para emissões e efluentes.", "O <b>licenciamento ambiental</b> exige que a fábrica prove que controla seus impactos.", "Sensores em chaminés e saídas de água fazem <b>monitoramento contínuo</b>."],
+            pills: [],
+            banner: ["📡", "De ocasional a contínuo", "A fiscalização deixou de ser pontual: o problema aparece <b>em tempo real</b>, não anos depois."] },
+          { year: "Atualmente", tab: "O desafio do século", sub: "O maior problema do século", widget: "final",
+            slides: [
+            { img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRN0TtGtUGw119kLM5YWUACYtUTxfNwmvoDI8g6GDZtE-NNoArXcOQNuTs&s=10", cap: "Imagem que representa o impacto atual das emissões de carbono e o desafio de reduzir os gases de efeito estufa." }],
+            bullets: ["Os poluentes <b>visíveis</b> foram em boa parte controlados.", "Mas um gás <b>invisível</b> cresce a cada ano e muda o clima: o <b>gás carbônico</b>.", "Esse é o <b>maior problema do século</b>."],
+            pills: [["con", "CO₂"], ["warn", "Invisível"], ["info", "Próximo tema"]],
+            banner: ["🌍", "Próximo tema", "A indústria aprendeu a tratar rio, ar e escória. <b>E o carbono?</b> A palavra agora passa para o próximo apresentador."] }
+        ];
+
+        var N = EV.length, car = 0, carT = null, sensT = null, active = true, dirOld = 0;
+        window.il_cur = 0;
+
+        /* ---------- Widgets ---------- */
+        function donoraHtml() { return '<div class="il-w"><h4>Impacto em Donora</h4><div class="il-row"><div><span class="il-big" id="ilD1">0</span><div class="il-note">mortes</div></div><div><span class="il-big" id="ilD2">0</span><div class="il-note">pessoas doentes</div></div><div><span class="il-big" id="ilD3">0%</span><div class="il-note">da população</div></div></div><div class="il-bar"><i id="ilDB"></i></div></div>'; }
+        function donoraInit() {
+          var t0 = performance.now(), dur = 1400;
+          function step(t) {
+            var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+            if (!$("ilD1")) return;
+            $("ilD1").textContent = Math.round(20 * e);
+            $("ilD2").textContent = Math.round(6000 * e).toLocaleString("pt-BR");
+            $("ilD3").textContent = Math.round(43 * e) + "%";
+            if (k < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+          setTimeout(function () { var b = $("ilDB"); if (b) b.style.width = "43%"; }, 60);
+        }
+        function calcHtml() { return ''; }
+        function calcInit() {
+          var r = $("ilCR");
+          function f(n) { return n.toLocaleString("pt-BR", { maximumFractionDigits: 1 }); }
+          function up() {
+            var t = +r.value;
+            $("ilCT").textContent = f(t) + " t";
+            $("ilCO").innerHTML = "Gera de <b>" + f(t * 0.4) + " t</b> a <b>" + f(t * 0.7) + " t</b> de resíduos sólidos. Granulada, a escória vira insumo de cimento em vez de ir para aterro.";
+          }
+          r.oninput = up; up();
+        }
+        var SENS = [["SO₂ (chaminé)", 38], ["Material particulado", 52], ["pH do efluente", 30]];
+        function sensHtml() { return '<div class="il-w"><h4>Monitoramento contínuo (simulação)</h4>' + SENS.map(function (s, i) { return '<div class="il-meter"><span>' + s[0] + '</span><div class="il-bar"><i id="ilSM' + i + '" style="width:' + s[1] + '%"></i></div><em id="ilSV' + i + '">' + s[1] + "%</em></div>"; }).join("") + '<div class="il-note">Valores ilustrativos, em % do limite permitido.</div></div>'; }
+        function sensTick() {
+          if (!active || document.hidden || il_cur !== 5) return;
+          SENS.forEach(function (s, i) {
+            var v = Math.max(8, Math.min(98, s[1] + Math.round((Math.random() - 0.5) * 24)));
+            s[1] = v;
+            var m = $("ilSM" + i); if (!m) return;
+            m.style.width = v + "%"; m.style.background = v > 85 ? "var(--amber)" : "var(--green)";
+            $("ilSV" + i).textContent = v + "%";
+          });
+        }
+        function finalHtml() { return '<div class="il-w"><h4>Próximo tema</h4><div class="il-row"><span class="il-big">CO₂</span><span class="il-out" style="min-height:0">O gás que não se vê, não cheira e muda o clima do planeta.</span></div></div>'; }
+
+        var W = { donora: [donoraHtml, donoraInit], calc: [calcHtml, calcInit], sensores: [sensHtml, null], final: [finalHtml, null] };
+
+        /* ---------- Carrossel ---------- */
+        function carGo(k) {
+          var n = EV[il_cur].slides.length;
+          car = (k + n) % n;
+          $("ilSlides").style.transform = "translateX(-" + car * 100 + "%)";
+          document.querySelectorAll("#ilDots button").forEach(function (d, i) { d.classList.toggle("on", i === car); });
+          carRestart();
+        }
+        function carRestart() {
+          clearTimeout(carT);
+          var a = $("ilAuto"); a.style.transition = "none"; a.style.width = "0";
+          if (EV[il_cur].slides.length < 2 || !active) return;
+          void a.offsetWidth; a.style.transition = "width 5s linear"; a.style.width = "100%";
+          carT = setTimeout(function () { carGo(car + 1); }, 5000);
+        }
+
+        /* ---------- Render ---------- */
+        function render(dir) {
+          var e = EV[il_cur], n = e.slides.length;
+          $("ilTitle").innerHTML = e.year;
+          $("ilKicker").textContent = "PERÍODO " + String(il_cur + 1).padStart(2, "0") + " · " + e.tab.toUpperCase();
+          $("ilMobCount").textContent = "PERÍODO " + String(il_cur + 1).padStart(2, "0") + " / 0" + N;
+          $("ilSlides").style.transition = "none";
+          $("ilSlides").innerHTML = e.slides.map(function (s) {
+            var content = s.img ? '<img src="' + s.img + '" alt="' + s.cap + '">' : s.link ? '<a class="il-source" href="' + s.link + '" target="_blank" rel="noopener noreferrer"><strong>' + s.title + '</strong><span>' + s.cap + '</span><span> abrir fonte em nova aba</span></a>' : scene(s.svg);
+            return '<div class="il-sl">' + content + (s.link ? "" : '<div class="il-cap">' + s.cap + "</div>") + "</div>";
+          }).join("");
+          $("ilDots").innerHTML = n > 1 ? e.slides.map(function (_, i) { return '<button aria-label="Imagem ' + (i + 1) + '"></button>'; }).join("") : "";
+          document.querySelectorAll("#ilDots button").forEach(function (d, i) { d.onclick = function () { carGo(i); }; });
+          $("ilPrev").style.display = $("ilNext").style.display = n > 1 ? "" : "none";
+          car = 0; void $("ilSlides").offsetWidth; $("ilSlides").style.transition = "";
+          carGo(0);
+          var w = e.widget ? W[e.widget] : null;
+          $("ilCard").innerHTML = '<div class="card-title"><span>' + e.sub + '</span><span class="big-number" style="color:var(--orange)">' + (e.year.length < 6 ? e.year : "") + "</span></div>" +
+            '<ul class="key-list">' + e.bullets.map(function (b) { return "<li>" + b + "</li>"; }).join("") + "</ul>" +
+            (w ? w[0]() : "") +
+            (e.pills.length ? '<div class="pill-row">' + e.pills.map(function (p) { return '<span class="pill ' + p[0] + '">' + p[1] + "</span>"; }).join("") + "</div>" : "");
+          if (w && w[1]) w[1]();
+          $("ilBanner").hidden = !e.banner.length;
+          $("ilBanner").style.display = e.banner.length ? "" : "none";
+          $("ilBIcon").textContent = ""; $("ilBTitle").textContent = ""; $("ilBText").textContent = "";
+          if (e.banner.length) {
+            $("ilBIcon").textContent = e.banner[0]; $("ilBTitle").textContent = e.banner[1]; $("ilBText").innerHTML = e.banner[2];
+          }
+          var d = $("ilDetail");
+          d.classList.remove("in-r", "in-l"); void d.offsetWidth;
+          if (dir) d.classList.add(dir > 0 ? "in-r" : "in-l");
+        }
+
+        window.il_go = function (i, instant) {
+          var ni = Math.max(0, Math.min(N - 1, i));
+          if (i >= N) ni = 0; if (i < 0) ni = N - 1;
+          var dir = instant ? 0 : (ni === il_cur ? 0 : (ni > il_cur ? 1 : -1));
+          il_cur = ni;
+          document.querySelectorAll("#ilTrack .il-node").forEach(function (nd, k) {
+            nd.classList.toggle("active", k === il_cur);
+            nd.classList.toggle("done", k < il_cur);
+            nd.setAttribute("aria-current", k === il_cur ? "step" : "false");
+            if (k === il_cur && nd.scrollIntoView) nd.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+          });
+          $("ilFill").style.width = (il_cur / (N - 1)) * 100 + "%";
+          render(dir);
+          var st = document.querySelector("#student-3 .slides-stage"); if (st) st.scrollTop = 0;
+        };
+
+        /* ---------- Montagem da trilha ---------- */
+        EV.forEach(function (e, i) {
+          var b = document.createElement("button");
+          b.className = "il-node";
+          b.innerHTML = '<span class="il-dot"></span><b>' + e.year + "</b><small>" + e.tab + "</small>";
+          b.onclick = function () { il_go(i); };
+          $("ilTrack").appendChild(b);
+        });
+        $("ilPrev").onclick = function () { carGo(car - 1); };
+        $("ilNext").onclick = function () { carGo(car + 1); };
+        $("ilCar").addEventListener("mouseenter", function () { clearTimeout(carT); var a = $("ilAuto"), w = a.getBoundingClientRect().width; a.style.transition = "none"; a.style.width = w + "px"; });
+        $("ilCar").addEventListener("mouseleave", carRestart);
+
+        /* arrastar a trilha com o mouse + deslizar com o dedo no detalhe */
+        (function () {
+          var r = $("ilRail"), dn = false, sx = 0, sl = 0;
+          r.addEventListener("pointerdown", function (e) { if (e.pointerType === "mouse" && e.target.closest(".il-node")) return; dn = true; sx = e.clientX; sl = r.scrollLeft; });
+          window.addEventListener("pointermove", function (e) { if (dn) r.scrollLeft = sl - (e.clientX - sx); });
+          window.addEventListener("pointerup", function () { dn = false; });
+          var tx = null, det = $("ilDetail");
+          det.addEventListener("touchstart", function (e) { tx = e.touches[0].clientX; }, { passive: true });
+          det.addEventListener("touchend", function (e) { if (tx === null) return; var d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 70) il_go(il_cur + (d < 0 ? 1 : -1)); tx = null; }, { passive: true });
+        })();
+
+        window.addEventListener("keydown", function (e) {
+          if (e.target && e.target.tagName === "INPUT") return;
+          if (e.key === "ArrowRight") il_go(il_cur + 1);
+          if (e.key === "ArrowLeft") il_go(il_cur - 1);
+        });
+
+        /* hooks do shell */
+        window.alunoAtivado = function () { active = true; carRestart(); };
+        window.alunoDesativado = function () { active = false; clearTimeout(carT); };
+
+        sensT = setInterval(sensTick, 1100);
+        il_go(0, true);
+      })();
+    </script>
   </body>
 </html>
